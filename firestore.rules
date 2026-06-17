@@ -1,0 +1,112 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == "eler30.mr@gmail.com";
+    }
+
+    function isPublishedApp(appId) {
+      return get(/databases/$(database)/documents/apps/$(appId)).data.status == "published";
+    }
+
+    function hasOnlyCounterFields(fields) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(fields);
+    }
+
+    function isLikeCounterUpdate() {
+      return hasOnlyCounterFields(["likesCount", "updatedAt"])
+        && request.resource.data.likesCount == resource.data.likesCount + 1;
+    }
+
+    function isDownloadCounterUpdate() {
+      return hasOnlyCounterFields(["downloadsCount", "updatedAt"])
+        && request.resource.data.downloadsCount == resource.data.downloadsCount + 1;
+    }
+
+    function isRatingCounterUpdate() {
+      return hasOnlyCounterFields(["ratingCount", "ratingSum", "updatedAt"])
+        && request.resource.data.ratingCount == resource.data.ratingCount + 1
+        && request.resource.data.ratingSum >= resource.data.ratingSum + 1
+        && request.resource.data.ratingSum <= resource.data.ratingSum + 5;
+    }
+
+    match /apps/{appId} {
+      allow read: if isAdmin() || resource.data.status == "published";
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin()
+        || (
+          resource.data.status == "published"
+          && (
+            isLikeCounterUpdate()
+            || isDownloadCounterUpdate()
+            || isRatingCounterUpdate()
+          )
+        );
+
+      match /comments/{commentId} {
+        allow read: if isAdmin()
+          || (
+            isPublishedApp(appId)
+            && resource.data.approved == true
+          );
+
+        allow create: if isPublishedApp(appId)
+          && request.resource.data.keys().hasOnly([
+            "name",
+            "comment",
+            "approved",
+            "createdAt"
+          ])
+          && request.resource.data.name is string
+          && request.resource.data.name.size() >= 2
+          && request.resource.data.name.size() <= 60
+          && request.resource.data.comment is string
+          && request.resource.data.comment.size() >= 2
+          && request.resource.data.comment.size() <= 600
+          && request.resource.data.approved == false;
+
+        allow update, delete: if isAdmin();
+      }
+
+      match /ratings/{ratingId} {
+        allow read: if isAdmin() || isPublishedApp(appId);
+
+        allow create: if isPublishedApp(appId)
+          && request.resource.data.keys().hasOnly([
+            "rating",
+            "createdAt"
+          ])
+          && request.resource.data.rating is number
+          && request.resource.data.rating >= 1
+          && request.resource.data.rating <= 5;
+
+        allow update, delete: if false;
+      }
+
+      match /likes/{likeId} {
+        allow read: if isAdmin() || isPublishedApp(appId);
+
+        allow create: if isPublishedApp(appId)
+          && request.resource.data.keys().hasOnly([
+            "createdAt"
+          ]);
+
+        allow update, delete: if false;
+      }
+
+      match /downloads/{downloadId} {
+        allow read: if isAdmin();
+
+        allow create: if isPublishedApp(appId)
+          && request.resource.data.keys().hasOnly([
+            "createdAt"
+          ]);
+
+        allow update, delete: if false;
+      }
+    }
+  }
+}
