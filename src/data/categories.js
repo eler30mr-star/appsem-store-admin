@@ -3,7 +3,6 @@ export const CATEGORIES = [
   { key: 'herramientas', label: 'Herramientas' },
   { key: 'libros-referencias', label: 'Libros y referencias' },
   { key: 'productividad', label: 'Productividad' },
-  { key: 'cristianas', label: 'Cristianas' },
   { key: 'finanzas', label: 'Finanzas' },
   { key: 'salud-bienestar', label: 'Salud y bienestar' },
   { key: 'personalizacion', label: 'Personalización' },
@@ -15,5 +14,9 @@ export const CATEGORIES = [
 ];
 
 export function getCategoryLabel(categoryKey) {
+  if (['cristianas', 'christian', 'bible'].includes(categoryKey)) {
+    return 'Libros y referencias';
+  }
+
   return CATEGORIES.find((category) => category.key === categoryKey)?.label || 'Otros';
 }
