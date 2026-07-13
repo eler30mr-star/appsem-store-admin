@@ -23,6 +23,13 @@ const initialForm = {
   operatingSystem: 'Android',
   minAndroidVersion: '',
   currentVersion: '',
+  lastUpdate: '',
+  languages: '',
+  offlineUse: 'No',
+  containsAds: 'No',
+  inAppPurchases: 'No',
+  ageRating: '',
+  price: 'Gratis',
   developer: DEFAULT_DEVELOPER,
   status: 'draft',
 };
@@ -62,6 +69,13 @@ export default function AppFormPage({ mode }) {
           operatingSystem: app.operatingSystem || 'Android',
           minAndroidVersion: app.minAndroidVersion || '',
           currentVersion: app.currentVersion || '',
+          lastUpdate: app.lastUpdate || '',
+          languages: app.languages || '',
+          offlineUse: app.offlineUse || 'No',
+          containsAds: app.containsAds || 'No',
+          inAppPurchases: app.inAppPurchases || 'No',
+          ageRating: app.ageRating || '',
+          price: app.price || 'Gratis',
           developer: app.developer || DEFAULT_DEVELOPER,
           status: app.status || 'draft',
         });
@@ -253,6 +267,36 @@ export default function AppFormPage({ mode }) {
           </Field>
           <Field label="Versión actual">
             <input value={form.currentVersion} onChange={(event) => handleChange('currentVersion', event.target.value)} placeholder="1.0.0" />
+          </Field>
+          <Field label="Última actualización">
+            <input value={form.lastUpdate} onChange={(event) => handleChange('lastUpdate', event.target.value)} placeholder="12 de julio de 2026" />
+          </Field>
+          <Field label="Idiomas">
+            <input value={form.languages} onChange={(event) => handleChange('languages', event.target.value)} placeholder="Español, Inglés, Portugués" />
+          </Field>
+          <Field label="Uso sin conexión">
+            <select value={form.offlineUse} onChange={(event) => handleChange('offlineUse', event.target.value)}>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </Field>
+          <Field label="Contiene anuncios">
+            <select value={form.containsAds} onChange={(event) => handleChange('containsAds', event.target.value)}>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </Field>
+          <Field label="Compras dentro de la app">
+            <select value={form.inAppPurchases} onChange={(event) => handleChange('inAppPurchases', event.target.value)}>
+              <option value="Sí">Sí</option>
+              <option value="No">No</option>
+            </select>
+          </Field>
+          <Field label="Clasificación por edad">
+            <input value={form.ageRating} onChange={(event) => handleChange('ageRating', event.target.value)} placeholder="Para todos" />
+          </Field>
+          <Field label="Precio">
+            <input value={form.price} onChange={(event) => handleChange('price', event.target.value)} placeholder="Gratis o S/ 9.90" />
           </Field>
           <Field label="Desarrollador">
             <input value={form.developer} onChange={(event) => handleChange('developer', event.target.value)} placeholder="AppsMart Technology" />
