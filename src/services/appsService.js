@@ -45,6 +45,10 @@ export function buildAppPayload(formData, mode = 'create') {
     screenshots: parseScreenshots(formData.screenshots),
     playStoreUrl: cleanText(formData.playStoreUrl),
     privacyPolicyUrl: cleanText(formData.privacyPolicyUrl),
+    termsUrl: cleanText(formData.termsUrl),
+    legalNoticeUrl: cleanText(formData.legalNoticeUrl),
+    accountDeletionUrl: cleanText(formData.accountDeletionUrl),
+    securityReportUrl: cleanText(formData.securityReportUrl),
     packageName: cleanText(formData.packageName),
     appSize: cleanText(formData.appSize),
     operatingSystem: cleanText(formData.operatingSystem) || 'Android',
@@ -58,6 +62,7 @@ export function buildAppPayload(formData, mode = 'create') {
     ageRating: cleanText(formData.ageRating),
     price: cleanText(formData.price),
     developer: cleanText(formData.developer) || DEFAULT_DEVELOPER,
+    featured: Boolean(formData.featured),
     status: cleanText(formData.status) || 'draft',
     updatedAt: serverTimestamp(),
   };
