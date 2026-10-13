@@ -101,3 +101,5 @@ Ejecución con Node 22 y Java 21 en GitHub Actions: instalación correcta, 12 pr
 Se generó `package-lock.json` mediante GitHub Actions, sin modificar versiones declaradas en package.json. La CI cambia su instalación de `npm install` a `npm ci` para asegurar versiones transitivas fijadas. El flujo con permiso temporal de escritura se eliminó tras utilizarse una sola vez.
 
 **Pendiente aún para cierre total:** verificación externa de reglas realmente desplegadas de Firebase, respaldo/restauración seguro en producción y consolidación formal de la línea base tras el último CI.
+
+**Última ejecución CI comprobada:** [#38434289201](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38434289201) — **SUCCESS** con `npm ci`, build y 22 pruebas de caracterización (12 unitarias + 10 Firestore). Quedan pendientes la inspección de reglas activas y la recuperación/restauración de producción.

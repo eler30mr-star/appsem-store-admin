@@ -76,3 +76,11 @@ Los tests no implican un sistema seguro ni cerrado. Para cerrar Fase 1 también 
 - Blob SHA de package-lock.json: `d35ba81cc7298ec604d6ca4f3a765c35880cfc75`.
 - Flujo temporal de escritura `fase-01-lockfile-once.yml` eliminado en commit `44023c86487cb55c76d9a6a82cd2126b8dea411e`.
 - A partir de ahora el pipeline principal utiliza `npm ci` contra el lockfile y mantiene permisos de lectura; falta confirmar la primera ejecución de este pipeline.
+
+## Verificación final del pipeline reproducible
+
+**Workflow #38434289201:** https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38434289201
+
+Resultado: **SUCCESS**. Se comprobaron instalación con `npm ci` desde `package-lock.json`, 12 pruebas unitarias, escaneo estático, compilación Vite y las 10 subpruebas Firestore del emulador. La aplicación y reglas operativas no se modificaron. El proyecto de emulación utilizado es `demo-appsem-phase1`.
+
+**Cierre operativo de Fase 1: PENDIENTE** de verificar las reglas efectivamente publicadas de `webs-8b1bf` y un respaldo/restauración antes de modificar producción. La línea base de GitHub y su CI sí están verificadas. Esta fase no corrige SEC-01 ni incompatibilidades INT-01/02; se reservan para las fases posteriores.
