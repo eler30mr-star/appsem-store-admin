@@ -67,3 +67,7 @@ Se almacenó `docs/fase-01/FIRESTORE_REGLAS_REPORTADAS_2026-10-13.rules`. Es una
 **Compatibilidad:** las reglas aportadas se alinean mejor con el frontend de Admin para la identidad y con el frontend público para los nombres de campos e interacciones. No obstante, mantienen problemas graves de integridad en contadores y promedios, y no garantizan unicidad de eventos ni impiden spam. Test suite: 17/17 escenarios ejecutados en GitHub Actions #38438813839.
 
 Antes de cambiar reglas productivas se requiere respaldo, identidad de despliegue confirmada y migración coordinada entre los dos repositorios.
+
+## 7. Contrato operativo confirmado por el propietario
+
+El propietario confirmó expresamente que `docs/fase-01/FIRESTORE_REGLAS_REPORTADAS_2026-10-13.rules` **representa las reglas activas en Firebase Firestore** al momento de la Auditoría 1. Para el trabajo posterior esta será la **línea base operativa declarada**. Los archivos `firestore.rules` de Admin y tienda en GitHub son versiones divergentes y no deben reemplazar esa línea base sin pruebas y migración coordinada. Confirmación del propietario; no se afirma extracción autenticada por API.

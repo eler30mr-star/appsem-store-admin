@@ -103,3 +103,9 @@ Resultado: **SUCCESS**. Se comprobaron instalación con `npm ci` desde `package-
 - Las restricciones de lectura de borradores, edición de datos sensibles y moderación privada también se confirmaron en el emulador.
 - **Limitación:** el archivo de reglas fue proporcionado por el usuario. No hay consulta autenticada que demuestre que coincide byte a byte con las reglas desplegadas en `webs-8b1bf`. La validación de respaldos y restauración también continúa pendiente.
 - La primera ejecución de esta nueva suite falló por una llamada incorrecta a la API del fixture; se reparó en el commit indicado. El resultado verde citado corresponde a la ejecución posterior.
+
+## Corrección de estado — confirmación expresa del propietario
+
+El responsable aclaró el **13/10/2026** que el archivo `FIRESTORE_REGLAS_REPORTADAS_2026-10-13.rules` corresponde **exactamente a sus reglas actualmente activas en Firebase**. Esta confirmación del propietario resuelve la solicitud pendiente de identificación de reglas: **CERRADO**. Las anotaciones anteriores que las describen como no confirmadas reflejan el estado antes de dicha aclaración y quedan superadas por este registro.
+
+Sigue pendiente únicamente el **respaldo y ensayo de restauración** antes de intervenciones sensibles en producción. No se realizó ningún cambio a datos ni reglas de Firebase.

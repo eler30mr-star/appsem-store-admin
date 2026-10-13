@@ -115,3 +115,11 @@ Se incorporaron 17 subpruebas de caracterización en `tests/firestore/reported-r
 **Falta para cierre definitivo de Fase 1:** confirmación independiente del despliegue desde la consola Firebase, respaldo/restauración verificables y acuerdo de política de conservación. El resto de evidencia automatizada ya existe.
 
 **Actualización verificada 13/10/2026:** [GitHub Actions #38438813839](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38438813839): **SUCCESS**, 39 escenarios de caracterización (12 unitarios, 10 Firestore históricos y 17 de reglas aportadas). Se preserva la copia textual en `FIRESTORE_REGLAS_REPORTADAS_2026-10-13.rules`. Esta es la versión declarada por el usuario, no una descarga de Firebase Console. Persisten SEC-01 y SEC-02. El cierre operacional de Fase 1 requiere confirmar despliegue vigente y respaldo/restauración.
+
+## 11. Aclaración del responsable del proyecto — reglas operativas confirmadas
+
+**Confirmación directa del propietario:** Las reglas copiadas a `FIRESTORE_REGLAS_REPORTADAS_2026-10-13.rules` **son las reglas que tiene actualmente en Firebase Firestore**, según declaración explícita del responsable en esta conversación (13/10/2026).
+
+El pendiente anterior «confirmar qué reglas están publicadas» queda **CERRADO por confirmación del propietario**. No debe exigirse otra comprobación de consola para avanzar. Se conserva la distinción documental: confirmación del propietario, no extracción automática de consola.
+
+**Único pendiente operativo de Fase 1:** verificar un respaldo recuperable/restauración de Firestore antes de cambios sensibles de producción. Se puede iniciar Fase 2 en emulador sin esperar ese respaldo.
