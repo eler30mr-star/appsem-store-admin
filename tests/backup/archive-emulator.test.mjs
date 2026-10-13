@@ -34,6 +34,7 @@ test('Backup Spark: incluye raíces, subcolecciones y padres ausentes; restaura 
     // Documento padre apps/ausente NO existe, pero su subcolección SÍ.
     await db.doc('apps/ausente/comments/c2').set({ comment: 'Subcolección huérfana' });
     await db.doc('settings/site').set({ theme: 'dark', enabled: true });
+    const storedNanoseconds = (await ref.get()).data().createdAt.nanoseconds;
     const { dir, manifest } = await createArchive(db, { projectId, outputRoot: folder });
     assert.equal(manifest.documents, 4);
     assert.ok(manifest.missingParentDocuments >= 1);
@@ -43,7 +44,7 @@ test('Backup Spark: incluye raíces, subcolecciones y padres ausentes; restaura 
     assert.equal(result.count, 4);
     const restored = (await ref.get()).data();
     assert.equal(restored.title, 'Demo temporal');
-    assert.equal(restored.createdAt.nanoseconds, 555123444);
+    assert.equal(restored.createdAt.nanoseconds, storedNanoseconds);
     assert.equal(restored.coordinate.longitude, -77.03);
     assert.deepEqual(restored.binary, Buffer.from([0, 1, 2, 3, 255]));
     assert.equal(restored.reference.path, 'apps/demo');
