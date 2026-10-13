@@ -1,0 +1,30 @@
+name: "Fase 1 - preparar dependencia de respaldo"
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/fase-01-backup-dep-once.yml"]
+permissions:
+  contents: write
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: "Preparar firebase-admin y lockfile"
+        run: npm install --save-dev --save-exact firebase-admin@12.7.0 --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: "Registrar versiones sin secretos"
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add package.json package-lock.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --cached --quiet; then
+            git commit -m "build(phase1): fijar firebase-admin para respaldos manuales"
+            git push origin HEAD:main
+          fi
+# Retirar este flujo temporal tras ejecutarse una vez. No toca Firebase.
