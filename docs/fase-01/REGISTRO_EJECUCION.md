@@ -109,3 +109,11 @@ Resultado: **SUCCESS**. Se comprobaron instalación con `npm ci` desde `package-
 El responsable aclaró el **13/10/2026** que el archivo `FIRESTORE_REGLAS_REPORTADAS_2026-10-13.rules` corresponde **exactamente a sus reglas actualmente activas en Firebase**. Esta confirmación del propietario resuelve la solicitud pendiente de identificación de reglas: **CERRADO**. Las anotaciones anteriores que las describen como no confirmadas reflejan el estado antes de dicha aclaración y quedan superadas por este registro.
 
 Sigue pendiente únicamente el **respaldo y ensayo de restauración** antes de intervenciones sensibles en producción. No se realizó ningún cambio a datos ni reglas de Firebase.
+
+## Respaldo Firestore en plan Spark — herramienta preparada
+
+Se añadieron herramientas \`scripts/firestore/\` que exportan únicamente por lecturas de Admin SDK mediante ADC, generan respaldo NDJSON+gzip y manifiesto SHA-256, verifican la copia local y ensayan restauración exclusivamente en Firestore Emulator con proyecto demo-*. Se añadió \`.gitignore\` para respaldos/credenciales y pruebas unitarias e integración con datos ficticios.
+
+**No se ha hecho exportación de los datos reales de webs-8b1bf**: no hay credenciales de producción disponibles ni se autorizará un servicio remoto a leer esos datos. El propietario ejecutará \`npm run firestore:backup -- --project=webs-8b1bf --confirm-read\` en su PC con ADC y luego hará verificación y ensayo.
+
+Manual detallado: \`docs/fase-01/RESPALDO_MANUAL_SPARK.md\`. Hasta completar el respaldo REAL y su ensayo de restauración, el único pendiente de Fase 1 sigue abierto.

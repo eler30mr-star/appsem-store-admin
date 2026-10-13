@@ -36,6 +36,8 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: "Pruebas unitarias actuales"
         run: npm run test:baseline
+      - name: "Pruebas de serialización para backups (sin Firebase real)"
+        run: npm run test:backup:codec
       - name: "Inventario estático (sin acceso a Firebase real)"
         run: npm run baseline:scan
       - name: "Compilación React/Vite"

@@ -130,6 +130,10 @@ export async function verifyArchive(directory) {
 }
 
 export async function restoreToEmulator(db, dir) {
+  if (!/^(localhost|127\.0\.0\.1):8080$/.test(process.env.FIRESTORE_EMULATOR_HOST || '') ||
+      !String(db.projectId || '').startsWith('demo-')) {
+    throw new Error('Restauración bloqueada: solo Firestore Emulator con projectId demo-.');
+  }
   const verified = await verifyArchive(dir);
   let count = 0;
   let batch = db.batch();

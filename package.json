@@ -9,8 +9,12 @@
     "preview": "vite preview",
     "test:baseline": "node --test tests/baseline/*.test.mjs",
     "baseline:scan": "node scripts/baseline-scan.mjs",
-    "test:firestore": "firebase emulators:exec --config firebase.phase1.json --project demo-appsem-phase1 --only firestore \"node --test --test-concurrency=1 tests/firestore/*.test.mjs\"",
-    "check:phase1": "npm run test:baseline && npm run baseline:scan && npm run build && npm run test:firestore"
+    "test:firestore": "firebase emulators:exec --config firebase.phase1.json --project demo-appsem-phase1 --only firestore \"node --test --test-concurrency=1 tests/firestore/*.test.mjs tests/backup/archive-emulator.test.mjs\"",
+    "check:phase1": "npm run test:baseline && npm run baseline:scan && npm run build && npm run test:firestore",
+    "firestore:backup": "node scripts/firestore/backup.mjs",
+    "firestore:verify": "node scripts/firestore/verify.mjs",
+    "firestore:restore:demo": "node scripts/firestore/restore-emulator.mjs",
+    "test:backup:codec": "node --test tests/backup/codec.test.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "4.3.4",

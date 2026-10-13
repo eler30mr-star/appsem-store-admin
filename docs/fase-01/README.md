@@ -123,3 +123,9 @@ Se incorporaron 17 subpruebas de caracterización en `tests/firestore/reported-r
 El pendiente anterior «confirmar qué reglas están publicadas» queda **CERRADO por confirmación del propietario**. No debe exigirse otra comprobación de consola para avanzar. Se conserva la distinción documental: confirmación del propietario, no extracción automática de consola.
 
 **Único pendiente operativo de Fase 1:** verificar un respaldo recuperable/restauración de Firestore antes de cambios sensibles de producción. Se puede iniciar Fase 2 en emulador sin esperar ese respaldo.
+
+## 12. Herramienta de copia manual en Spark
+
+Se preparó un proceso de respaldo solo-lectura sin necesidad de activar Blaze. Manual: [RESPALDO_MANUAL_SPARK.md](RESPALDO_MANUAL_SPARK.md). Incluye todos los documentos y subcolecciones, manifiesto e integridad SHA-256, modo de ensayo solo en Emulator, protección contra subir backups/credenciales a Git y tests sintéticos.
+
+**No se debe confundir tener el programa con tener la copia real.** Falta que el propietario lo ejecute con sus credenciales autorizadas en Windows, valide resultados y ensaye la restauración. No es una instantánea transaccional.
