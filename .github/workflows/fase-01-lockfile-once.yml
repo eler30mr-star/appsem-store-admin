@@ -1,0 +1,39 @@
+name: "Fase 1 - Lockfile de una sola ejecución"
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fase-01-lockfile-once.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  lockfile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: "Generar lockfile reproducible"
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: "Registrar lockfile"
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add package-lock.json
+          if git diff --cached --quiet; then
+            echo "package-lock.json ya está actualizado."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "build(phase1): fijar dependencias con package-lock"
+          git push origin HEAD:main
+
+# Trabajo único de línea base. Eliminar este archivo tras generar el lockfile.
+# No usa Firebase, credenciales de producción ni despliega aplicaciones.
