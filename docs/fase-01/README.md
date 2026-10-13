@@ -87,3 +87,11 @@ También se incorporó firebase.phase1.json (configuración **exclusiva de emula
 El comando test:firestore inicia y detiene automáticamente el Firestore Emulator con proyecto ficticio demo-appsem-phase1. El test exige FIRESTORE_EMULATOR_HOST antes de acceder a Firestore. Los casos SEC-01 prueban que el defecto sigue presente; un resultado verde representa una línea base, NO la eliminación del problema.
 
 **Limitaciones:** la ejecución local de la suite de integración y compilación depende de instalar paquetes y el emulador; se documentará su resultado real en el registro de ejecución. La versión de reglas desplegada en webs-8b1bf sigue sin verificarse. Falta fijar package-lock.json después de una instalación reproducible.
+
+## 8. Resultado de la ejecución automatizada de Fase 1
+
+**CI aprobado:** https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38433378975
+
+Ejecución con Node 22 y Java 21 en GitHub Actions: instalación correcta, 12 pruebas base aprobadas, escáner ejecutado, Vite compilado y 10 escenarios de reglas Firestore aprobados en emulador. El emulador confirmó diferencias críticas entre Admin y tienda y un contador público manipulable (SEC-01). Todo ocurrió contra el proyecto ficticio `demo-appsem-phase1`.
+
+**Estado:** fase 1 técnicamente avanzada, pero todavía abierta por no haberse contrastado las reglas desplegadas en `webs-8b1bf`, ni completado la restauración/backup operacional. Se añade exportación del lockfile de dependencias en CI para fijar instalaciones reproducibles posteriormente.

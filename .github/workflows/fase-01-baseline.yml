@@ -33,6 +33,13 @@ jobs:
           java-version: "21"
       - name: "Instalar dependencias"
         run: npm install --no-audit --no-fund
+      - name: "Guardar lockfile generado para revisión"
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase1-package-lock
+          path: package-lock.json
+          retention-days: 7
+          if-no-files-found: error
       - name: "Pruebas unitarias actuales"
         run: npm run test:baseline
       - name: "Inventario estático (sin acceso a Firebase real)"

@@ -61,3 +61,7 @@ Los siguientes casos ahora tienen código en tests/firestore/rules-compat.test.m
 - FIRE-10 (Tienda): no acepta formato de timestamp de Admin.
 
 **IMPORTANTE:** las pruebas son de caracterización, no de seguridad corregida. Ninguna prueba escribe en la base de producción.
+
+## Evidencia CI de casos de caracterización
+
+**Ejecución 38433378975**: FIRE-01..FIRE-10 ejecutados satisfactoriamente en Firebase Emulator, el 13/10/2026. **10/10 caracterizaciones aprobadas**, incluyendo casos que evidencian errores. Los casos AUTH-01..MET-03 de la matriz original requieren ampliar pruebas de seguridad específicas para el futuro contrato único y siguen **pendientes de corrección**. Una caracterización aprobada no elimina una vulnerabilidad.

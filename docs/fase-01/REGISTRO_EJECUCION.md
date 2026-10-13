@@ -51,3 +51,20 @@ Se preparó un flujo CI de GitHub Actions (Node 22 + Java 21) con npm install, 1
 - Los tests Firebase no arrancaron los casos porque el harness llamó `env.loadFirestoreRules`, método inexistente en @firebase/rules-unit-testing 3.0.4 (API v9).
 - Corrección: inicializar RulesTestEnvironment con `firestore.rules` por cada escenario; limpiar recursos y datos entre casos. No se modificaron las reglas reales.
 - El resultado de la ejecución nueva se verificará por separado; no se marcarán los 10 casos como aprobados hasta su ejecución efectiva.
+
+## Ejecución verificada: GitHub Actions #38433378975 (13/10/2026)
+
+URL: https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38433378975
+
+- Instalación npm: **PASS**
+- 12 pruebas unitarias nativas Node: **PASS**
+- Escáner estático: **PASS**
+- `npm run build`: **PASS**
+- Firebase Emulator: **10 subpruebas (1 test padre) PASS, 0 fallos**
+- Resultado global de workflow: **SUCCESS**
+- Versión Admin evaluada: `df012724310589f9b59131f44cfdaab904d7e469`
+- No hubo despliegue de Firebase, Vercel ni uso de claves de producción.
+- Se **confirmó** vía emulator que las reglas de Admin y tienda difieren en permisos; además, un visitante puede incrementar likesCount según las reglas actuales. Son fallos abiertos, aunque las pruebas de caracterización pasen.
+- La versión efectiva de reglas del proyecto Firestore `webs-8b1bf` sigue sin comprobarse: la suite utiliza exclusivamente `demo-appsem-phase1`.
+
+Los tests no implican un sistema seguro ni cerrado. Para cerrar Fase 1 también falta un respaldo/rollback validado e inspeccionar las reglas publicadas con acceso autorizado.
