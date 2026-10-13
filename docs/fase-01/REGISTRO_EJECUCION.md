@@ -144,3 +144,15 @@ Se habilitó una nueva página protegida `/backups` en el panel de administraci�
 **Pruebas CI:** https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38467378793 — SUCCESS, incluyendo creación y descifrado del nuevo formato en las pruebas de interoperabilidad Node/navegador, compilación y pruebas Firestore Emulator.
 
 **Pendiente operativo:** la copia real sigue sin estar en GitHub. El usuario debe acceder al panel con su sesión autorizada, cifrar y subir; ninguna credencial Firebase real está disponible para esta ejecución automatizada del repositorio. No afirmar el cierre de Fase 1 hasta que aparezca un fichero real `*.appsem.enc` bajo `backups/encrypted/`, se valide su integridad y se ensaye una restauración.
+
+## Copia real cifrada detectada en el mismo GitHub — 13/10/2026
+
+Se comprobó mediante el listado de contenidos de GitHub que **existe efectivamente** un archivo de respaldo cifrado de Firestore en la rama `main`:
+
+- Archivo: `backups/encrypted/appsem-firestore-2026-10-13T21-27-24-109Z-b3f473bd.appsem.enc`
+- Tamaño registrado por GitHub: **6.497 bytes**
+- Commit de subida: [`9e8faa174dd64c8e92c6cf826695595aabf9d0cf`](https://github.com/eler30mr-star/appsem-store-admin/commit/9e8faa174dd64c8e92c6cf826695595aabf9d0cf)
+- Mensaje: `backup(firestore): guardar datos cifrados desde Admin 2026-10-13T21:27:24.109Z`.
+- Captura proporcionada por el propietario: el panel confirma **31 documentos (4 apps)** al descargar otra copia cifrada posterior, `appsem-firestore-2026-10-13T21-27-49-729Z-af0c32e9.appsem.enc`.
+
+**Estado actualizado:** requisito «archivo real en el mismo GitHub» = **COMPLETADO (existencia verificable)**. Como el archivo de GitHub está cifrado y no se dispone de su frase secreta, el contenido y su recuento **no se han comprobado independientemente**. El ensayo de descifrado y restauración de esta copia concreta en Firebase Emulator permanece pendiente antes de declarar cerrada totalmente la recuperación de Fase 1. No se publican claves, tokens ni datos privados en Git.
