@@ -8,7 +8,11 @@ ui-debug.log
 *.log
 
 # Datos de usuarios y respaldos: NUNCA en Git.
-backups/
+# Privado: jamás rastrear archivos sin cifrar
+/backups/*
+!/backups/encrypted/
+/backups/encrypted/*
+!/backups/encrypted/*.appsem.enc
 backup-data/
 *.ndjson
 *.ndjson.gz

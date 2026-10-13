@@ -14,7 +14,10 @@
     "firestore:backup": "node scripts/firestore/backup.mjs",
     "firestore:verify": "node scripts/firestore/verify.mjs",
     "firestore:restore:demo": "node scripts/firestore/restore-emulator.mjs",
-    "test:backup:codec": "node --test tests/backup/codec.test.mjs"
+    "test:backup:codec": "node --test tests/backup/codec.test.mjs",
+    "firestore:backup:github": "node scripts/firestore/backup-github.mjs",
+    "firestore:decrypt": "node scripts/firestore/decrypt-github.mjs",
+    "test:backup:encrypted": "node --test tests/backup/encryption.test.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "4.3.4",
