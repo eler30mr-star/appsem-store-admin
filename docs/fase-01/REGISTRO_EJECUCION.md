@@ -44,3 +44,10 @@ No se añadieron dependencias ni se realizaron cambios al tiempo de ejecución d
 Se preparó un flujo CI de GitHub Actions (Node 22 + Java 21) con npm install, 12 tests unitarios, escáner estático, compilación Vite y 10 tests Firestore en emulator. Se fijaron dependencias de desarrollo en package.json (@firebase/rules-unit-testing 3.0.4, firebase-tools 14.19.1) por compatibilidad con SDK Firebase 10 y Node/Java usados. No se cambió ninguna dependencia de producción.
 
 **Nota de honestidad:** no se reclama el éxito de compilación, npm install ni tests de emulador sin ver el resultado efectivo del workflow. Si CI falla, registrar el error y corregir exclusivamente infraestructura/pruebas de Fase 1. La versión de reglas activa del Firebase real continúa desconocida.
+
+## CI: primera ejecución y reparación de pruebas (13/10/2026)
+
+- Workflow https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38433138835 — dependencia npm, 12 tests básicos, escáner estático y compilación Vite: correctos.
+- Los tests Firebase no arrancaron los casos porque el harness llamó `env.loadFirestoreRules`, método inexistente en @firebase/rules-unit-testing 3.0.4 (API v9).
+- Corrección: inicializar RulesTestEnvironment con `firestore.rules` por cada escenario; limpiar recursos y datos entre casos. No se modificaron las reglas reales.
+- El resultado de la ejecución nueva se verificará por separado; no se marcarán los 10 casos como aprobados hasta su ejecución efectiva.

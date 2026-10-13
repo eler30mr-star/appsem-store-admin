@@ -33,13 +33,14 @@ const appData = {
 };
 
 test('Fase 1: comportamientos reales de cada versión de reglas EN EMULADOR', async (t) => {
-  const env = await initializeTestEnvironment({
-    projectId,
-    firestore: { host: '127.0.0.1', port: 8080 }
-  });
+  let env = null;
   try {
     async function reset(rules) {
-      await env.loadFirestoreRules({ rules });
+      if (env) await env.cleanup();
+      env = await initializeTestEnvironment({
+        projectId,
+        firestore: { host: '127.0.0.1', port: 8080, rules }
+      });
       await env.clearFirestore();
       await env.withSecurityRulesDisabled(async (context) => {
         const db = context.firestore();
@@ -112,6 +113,6 @@ test('Fase 1: comportamientos reales de cada versión de reglas EN EMULADOR', as
       }));
     });
   } finally {
-    await env.cleanup();
+    if (env) await env.cleanup();
   }
 });
