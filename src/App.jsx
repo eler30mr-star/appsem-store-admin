@@ -5,6 +5,7 @@ import AppsPage from './pages/AppsPage';
 import AppFormPage from './pages/AppFormPage';
 import CommentsPage from './pages/CommentsPage';
 import DashboardPage from './pages/DashboardPage';
+import BackupsPage from './pages/BackupsPage';
 import LoginPage from './pages/LoginPage';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="apps/new" element={<AppFormPage mode="create" />} />
         <Route path="apps/:appId/edit" element={<AppFormPage mode="edit" />} />
         <Route path="comments" element={<CommentsPage />} />
+        <Route path="backups" element={<BackupsPage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

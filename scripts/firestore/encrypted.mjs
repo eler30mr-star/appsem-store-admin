@@ -4,7 +4,7 @@
  * La contraseña de descifrado NUNCA se guarda en Git.
  * El contenido cifrado incluye el manifest JSON y documents.ndjson.gz.
  */
-import { createCipheriv, createDecipheriv, createHash, randomBytes, scrypt as scryptCb } from 'node:crypto';
+import { createCipheriv, createDecipheriv, createHash, pbkdf2 as pbkdf2Cb, randomBytes, scrypt as scryptCb } from 'node:crypto';
 import { promisify } from 'node:util';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { mkdir, mkdtemp, open, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
@@ -18,6 +18,7 @@ const FORMAT = 'appsem-encrypted-firestore-v1';
 const TAG_SIZE = 16;
 const KDF = { N: 131072, r: 8, p: 1, maxmem: 256 * 1024 * 1024 };
 const scrypt = promisify(scryptCb);
+const pbkdf2 = promisify(pbkdf2Cb);
 const headerMax = 2048;
 
 function checkPass(passphrase) {
@@ -27,7 +28,11 @@ function checkPass(passphrase) {
   }
 }
 
-async function derive(passphrase, salt) {
+async function derive(passphrase, salt, header) {
+  if (header?.kdf === 'pbkdf2-sha256') {
+    if (header.iterations !== 600000) throw new Error('Parámetros PBKDF2 no soportados.');
+    return pbkdf2(passphrase, salt, header.iterations, 32, 'sha256');
+  }
   return scrypt(passphrase, salt, 32, KDF);
 }
 
@@ -54,8 +59,9 @@ async function readHeader(path) {
     const buf = await readExact(fd, n, MAGIC.length + 4);
     const header = JSON.parse(buf.toString('utf8'));
     if (header.format !== FORMAT || header.algo !== 'aes-256-gcm' ||
-        header.kdf !== 'scrypt' || header.N !== KDF.N || header.r !== KDF.r ||
-        header.p !== KDF.p || !/^[0-9a-f]{32}$/.test(header.salt) ||
+        !((header.kdf === 'scrypt' && header.N === KDF.N && header.r === KDF.r && header.p === KDF.p) ||
+          (header.kdf === 'pbkdf2-sha256' && header.iterations === 600000)) ||
+        !/^[0-9a-f]{32}$/.test(header.salt) ||
         !/^[0-9a-f]{24}$/.test(header.iv)) {
       throw new Error('Cabecera o parámetros criptográficos no soportados.');
     }
@@ -121,7 +127,7 @@ export async function decryptBackup(encryptedFile, targetRoot, passphrase) {
   checkPass(passphrase);
   const path = resolve(encryptedFile);
   const { header, headerBytes, start, end, tag } = await readHeader(path);
-  const key = await derive(passphrase, Buffer.from(header.salt, 'hex'));
+  const key = await derive(passphrase, Buffer.from(header.salt, 'hex'), header);
   await mkdir(resolve(targetRoot), { recursive: true, mode: 0o700 });
   const dir = await mkdtemp(join(resolve(targetRoot), 'restored-'));
   const staging = join(dir, 'bundle.private');

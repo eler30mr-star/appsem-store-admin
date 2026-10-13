@@ -992,3 +992,18 @@ tr:last-child td {
     min-width: 200px;
   }
 }
+
+
+/* Respaldo de Firestore — acciones y formularios compactos, sin mostrar secretos */
+.backup-panel { padding: 24px; }
+.backup-panel h2 { display: flex; gap: 10px; align-items: center; }
+.backup-panel p { line-height: 1.6; }
+.backup-warning { background: var(--surface-2); color: var(--text); margin: 14px 0; }
+.backup-inputs { display: grid; gap: 10px; max-width: 620px; margin: 18px 0; }
+.backup-inputs label { font-weight: 750; }
+.backup-inputs input { display: block; width: 100%; border-radius: 12px; border: 1px solid var(--border); background: #fff; padding: 13px; color: var(--text); font: inherit; }
+.backup-inputs small { line-height: 1.5; color: var(--muted); }
+.backup-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.backup-panel .alert.success { margin-top: 12px; word-break: break-word; }
+.backup-panel .alert.success a { display: inline-flex; gap: 5px; align-items: center; }
+@media (max-width: 720px) { .backup-panel { padding: 18px; } .backup-actions { flex-direction: column; } }

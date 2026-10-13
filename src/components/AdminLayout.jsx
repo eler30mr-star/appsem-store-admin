@@ -2,6 +2,7 @@ import { signOut } from 'firebase/auth';
 import {
   AppWindow,
   BarChart3,
+  DatabaseBackup,
   LayoutDashboard,
   LogOut,
   MessageSquareText,
@@ -15,6 +16,7 @@ const navItems = [
   { to: '/dashboard', label: 'Resumen', icon: LayoutDashboard },
   { to: '/apps', label: 'Apps', icon: AppWindow },
   { to: '/comments', label: 'Comentarios', icon: MessageSquareText },
+  { to: '/backups', label: 'Respaldos', icon: DatabaseBackup },
 ];
 
 export default function AdminLayout() {
