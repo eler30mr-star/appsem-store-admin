@@ -1,0 +1,67 @@
+rules_version = '2';
+
+// FASE 2 — CANDIDATO DE SEGURIDAD. NO DESPLEGAR A PRODUCCIÓN.
+// IMPORTANTE: La tienda actual escribe contadores y eventos directamente.
+// Estas reglas bloquearían likes/ratings/downloadClicks hasta activar backend fiable.
+// Origen y despliegue: consultar docs/fase-02/README.md.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == "eler30.mr@gmail.com"
+        && request.auth.token.email_verified == true;
+    }
+
+    function appRef(appId) {
+      return /databases/$(database)/documents/apps/$(appId);
+    }
+
+    function parentPublished(appId) {
+      return exists(appRef(appId))
+        && get(appRef(appId)).data.status == "published";
+    }
+
+    match /apps/{appId} {
+      allow read: if isAdmin() || resource.data.status == "published";
+      allow create, update, delete: if isAdmin();
+
+      // Contadores agregados y registros de interacción serán mantenidos
+      // en transacción por un backend autenticado; Service SDK elude reglas.
+      match /likes/{likeId} {
+        allow read: if isAdmin() || parentPublished(appId);
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /ratings/{ratingId} {
+        allow read: if isAdmin() || parentPublished(appId);
+        allow create, update, delete: if isAdmin();
+      }
+
+      match /downloadClicks/{clickId} {
+        allow read: if isAdmin();
+        allow create, update, delete: if isAdmin();
+      }
+
+      // Los comentarios públicos siguen funcionando con moderación previa.
+      match /comments/{commentId} {
+        allow read: if isAdmin()
+          || (parentPublished(appId) && resource.data.approved == true);
+
+        allow create: if parentPublished(appId)
+          && request.resource.data.keys().hasOnly([
+            "name", "comment", "approved", "createdAt"
+          ])
+          && request.resource.data.name is string
+          && request.resource.data.name.size() >= 2
+          && request.resource.data.name.size() <= 60
+          && request.resource.data.comment is string
+          && request.resource.data.comment.size() >= 5
+          && request.resource.data.comment.size() <= 800
+          && request.resource.data.approved == false
+          && request.resource.data.createdAt == request.time;
+
+        allow update, delete: if isAdmin();
+      }
+    }
+  }
+}

@@ -9,22 +9,38 @@ export default function ProtectedRoute({ children }) {
   const [state, setState] = useState({ loading: true, user: null, denied: false });
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        setState({ loading: false, user: null, denied: false });
-        return;
-      }
-
-      if (user.email !== ADMIN_EMAIL) {
-        await signOut(auth);
-        setState({ loading: false, user: null, denied: true });
-        return;
-      }
-
-      setState({ loading: false, user, denied: false });
+    let active = true;
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      const verify = async () => {
+        if (!user) {
+          if (active) setState({ loading: false, user: null, denied: false });
+          return;
+        }
+        try {
+          // El correo visible no sustituye los claims comprobados por Firebase Auth.
+          const token = await user.getIdTokenResult(true);
+          const authorized = user.email === ADMIN_EMAIL &&
+            user.emailVerified === true &&
+            token.claims.email === ADMIN_EMAIL &&
+            token.claims.email_verified === true;
+          if (!authorized) {
+            await signOut(auth);
+            if (active) setState({ loading: false, user: null, denied: true });
+            return;
+          }
+          if (active) setState({ loading: false, user, denied: false });
+        } catch (_error) {
+          // Ante token inválido o sin conexión para verificar: denegar acceso.
+          try { await signOut(auth); } catch (_ignored) { /* Sin sesión recuperable */ }
+          if (active) setState({ loading: false, user: null, denied: true });
+        }
+      };
+      void verify();
     });
-
-    return () => unsubscribe();
+    return () => {
+      active = false;
+      unsubscribe();
+    };
   }, []);
 
   if (state.loading) {
@@ -46,7 +62,7 @@ export default function ProtectedRoute({ children }) {
             <ShieldAlert size={26} />
           </div>
           <h1>Acceso bloqueado</h1>
-          <p>Este panel solo permite el correo administrador autorizado.</p>
+          <p>Este panel requiere el correo administrador autorizado y verificado por Firebase.</p>
           <strong>{ADMIN_EMAIL}</strong>
           <a className="primary-button" href="/login">Volver al inicio de sesión</a>
         </section>

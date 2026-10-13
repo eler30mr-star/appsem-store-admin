@@ -16,9 +16,13 @@ export default function LoginPage() {
 
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      if (result.user.email !== ADMIN_EMAIL) {
+      const token = await result.user.getIdTokenResult(true);
+      if (result.user.email !== ADMIN_EMAIL ||
+          result.user.emailVerified !== true ||
+          token.claims.email !== ADMIN_EMAIL ||
+          token.claims.email_verified !== true) {
         await signOut(auth);
-        setError(`Solo puede acceder el correo administrador: ${ADMIN_EMAIL}`);
+        setError(`Solo puede acceder el correo administrador verificado: ${ADMIN_EMAIL}`);
         return;
       }
       navigate('/dashboard', { replace: true });
