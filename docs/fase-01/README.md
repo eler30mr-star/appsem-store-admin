@@ -95,3 +95,9 @@ El comando test:firestore inicia y detiene automáticamente el Firestore Emulato
 Ejecución con Node 22 y Java 21 en GitHub Actions: instalación correcta, 12 pruebas base aprobadas, escáner ejecutado, Vite compilado y 10 escenarios de reglas Firestore aprobados en emulador. El emulador confirmó diferencias críticas entre Admin y tienda y un contador público manipulable (SEC-01). Todo ocurrió contra el proyecto ficticio `demo-appsem-phase1`.
 
 **Estado:** fase 1 técnicamente avanzada, pero todavía abierta por no haberse contrastado las reglas desplegadas en `webs-8b1bf`, ni completado la restauración/backup operacional. Se añade exportación del lockfile de dependencias en CI para fijar instalaciones reproducibles posteriormente.
+
+## 9. Reproducibilidad de dependencias
+
+Se generó `package-lock.json` mediante GitHub Actions, sin modificar versiones declaradas en package.json. La CI cambia su instalación de `npm install` a `npm ci` para asegurar versiones transitivas fijadas. El flujo con permiso temporal de escritura se eliminó tras utilizarse una sola vez.
+
+**Pendiente aún para cierre total:** verificación externa de reglas realmente desplegadas de Firebase, respaldo/restauración seguro en producción y consolidación formal de la línea base tras el último CI.

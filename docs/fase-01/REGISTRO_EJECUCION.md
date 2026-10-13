@@ -68,3 +68,11 @@ URL: https://github.com/eler30mr-star/appsem-store-admin/actions/runs/3843337897
 - La versión efectiva de reglas del proyecto Firestore `webs-8b1bf` sigue sin comprobarse: la suite utiliza exclusivamente `demo-appsem-phase1`.
 
 Los tests no implican un sistema seguro ni cerrado. Para cerrar Fase 1 también falta un respaldo/rollback validado e inspeccionar las reglas publicadas con acceso autorizado.
+
+## Lockfile registrado y control temporal retirado
+
+- Acción 38434014823 completada correctamente: https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38434014823
+- package-lock.json generado sobre Node 22, comprobado en main; commit de generación `f8dfb729649b7a888b2754920d68b553a80a2148`.
+- Blob SHA de package-lock.json: `d35ba81cc7298ec604d6ca4f3a765c35880cfc75`.
+- Flujo temporal de escritura `fase-01-lockfile-once.yml` eliminado en commit `44023c86487cb55c76d9a6a82cd2126b8dea411e`.
+- A partir de ahora el pipeline principal utiliza `npm ci` contra el lockfile y mantiene permisos de lectura; falta confirmar la primera ejecución de este pipeline.
