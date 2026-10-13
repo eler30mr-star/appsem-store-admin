@@ -117,3 +117,13 @@ Se añadieron herramientas \`scripts/firestore/\` que exportan únicamente por l
 **No se ha hecho exportación de los datos reales de webs-8b1bf**: no hay credenciales de producción disponibles ni se autorizará un servicio remoto a leer esos datos. El propietario ejecutará \`npm run firestore:backup -- --project=webs-8b1bf --confirm-read\` en su PC con ADC y luego hará verificación y ensayo.
 
 Manual detallado: \`docs/fase-01/RESPALDO_MANUAL_SPARK.md\`. Hasta completar el respaldo REAL y su ensayo de restauración, el único pendiente de Fase 1 sigue abierto.
+
+## Prueba final de herramienta Spark — validación automatizada
+
+- Ejecución GitHub Actions: https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38443488839
+- Resultado: **SUCCESS**.
+- **12/12 pruebas unitarias preexistentes**, **7/7 nuevas pruebas de codificación**, **30 tests del runner en Firebase Emulator** (incluye 27 casos de caracterización Firestore, dos pruebas padre y una prueba de respaldo/restauración con datos ficticios); 0 fallos.
+- Integración de respaldo: cuatro documentos de ensayo recuperados, incluyendo subcolecciones bajo padre inexistente, mapas, blob, Timestamp y referencia. Detecta corrupción del gzip mediante SHA-256.
+- Compilación Vite y `npm ci`: correctos.
+- Primer intento falló por expectativa de nanosegundos distintos a la precisión realmente almacenada por Emulator. Se modificó el test para comparar el valor leído antes y después, no para alterar los datos.
+- **Todavía no se ha leído Firestore real ni creado copia de webs-8b1bf**. Único pendiente de Fase 1: responsable ejecuta el respaldo local y confirma verificación y restauración de ensayo. No se requiere Blaze para ejecutar la herramienta, pero las lecturas consumen cuota.

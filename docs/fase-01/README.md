@@ -129,3 +129,5 @@ El pendiente anterior «confirmar qué reglas están publicadas» queda **CERRAD
 Se preparó un proceso de respaldo solo-lectura sin necesidad de activar Blaze. Manual: [RESPALDO_MANUAL_SPARK.md](RESPALDO_MANUAL_SPARK.md). Incluye todos los documentos y subcolecciones, manifiesto e integridad SHA-256, modo de ensayo solo en Emulator, protección contra subir backups/credenciales a Git y tests sintéticos.
 
 **No se debe confundir tener el programa con tener la copia real.** Falta que el propietario lo ejecute con sus credenciales autorizadas en Windows, valide resultados y ensaye la restauración. No es una instantánea transaccional.
+
+**CI verificada del sistema de respaldo:** [#38443488839](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38443488839) — SUCCESS; serialización, recuperación integral de datos ficticios, detección de corrupción y compilación correctas. **Pendiente:** respaldo real ejecutado por el propietario.
