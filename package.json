@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:baseline": "node --test tests/baseline/*.test.mjs",
+    "baseline:scan": "node scripts/baseline-scan.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "4.3.4",
