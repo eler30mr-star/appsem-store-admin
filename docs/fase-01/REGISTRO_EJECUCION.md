@@ -127,3 +127,11 @@ Manual detallado: \`docs/fase-01/RESPALDO_MANUAL_SPARK.md\`. Hasta completar el 
 - Compilación Vite y `npm ci`: correctos.
 - Primer intento falló por expectativa de nanosegundos distintos a la precisión realmente almacenada por Emulator. Se modificó el test para comparar el valor leído antes y después, no para alterar los datos.
 - **Todavía no se ha leído Firestore real ni creado copia de webs-8b1bf**. Único pendiente de Fase 1: responsable ejecuta el respaldo local y confirma verificación y restauración de ensayo. No se requiere Blaze para ejecutar la herramienta, pero las lecturas consumen cuota.
+
+## Copias cifradas GitHub — implementación y pruebas automatizadas
+
+- Carpeta de destino `backups/encrypted/` inicializada con README; los datos `*.appsem.enc` serán archivos cifrados con contraseña personal.
+- GitHub del Admin es **público**: solo archivos cifrados. Datos `documents.ndjson.gz` y credenciales permanecen excluidos de Git.
+- Incorporados `scripts/firestore/encrypted.mjs`, `backup-github.mjs`, `decrypt-github.mjs` y test con una copia **sintética** que comprueba cifrado, descifrado, clave incorrecta y alteración de bytes.
+- CI: [#38464874293](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38464874293) confirma éxito en la tarea de prueba criptográfica y compilación; comprobar estado final del workflow en el enlace.
+- **No hay backup de datos reales** porque se necesitan credenciales ADC del propietario. No hay claves privadas, contraseñas ni documentos reales en el repositorio.

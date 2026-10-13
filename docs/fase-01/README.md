@@ -131,3 +131,9 @@ Se preparó un proceso de respaldo solo-lectura sin necesidad de activar Blaze. 
 **No se debe confundir tener el programa con tener la copia real.** Falta que el propietario lo ejecute con sus credenciales autorizadas en Windows, valide resultados y ensaye la restauración. No es una instantánea transaccional.
 
 **CI verificada del sistema de respaldo:** [#38443488839](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38443488839) — SUCCESS; serialización, recuperación integral de datos ficticios, detección de corrupción y compilación correctas. **Pendiente:** respaldo real ejecutado por el propietario.
+
+## 13. Copias CIFRADAS en el mismo GitHub público
+
+Se implementó un destino `backups/encrypted/` en el repositorio **público** `eler30mr-star/appsem-store-admin`. El script `npm run firestore:backup:github -- --project=webs-8b1bf --confirm-read --confirm-github` hace una exportación de solo lectura utilizando las credenciales locales del propietario, cifra datos y manifiesto con AES-256-GCM y scrypt, verifica localmente la capacidad de descifrado y sube **exclusivamente el archivo cifrado** a `main`. Incluye comando de recuperación `npm run firestore:decrypt -- "backups/encrypted/NOMBRE.appsem.enc"` y la guía `RESPALDO_CIFRADO_EN_GITHUB.md`.
+
+**Estado real:** código, carpeta y pruebas preparadas; no existe copia de producción subida hasta que se ejecute el comando con acceso autorizado en el PC del propietario. La contraseña no se almacena en GitHub. Cargar un respaldo sin cifrar en este repositorio público podría divulgar datos: está explícitamente prohibido.
