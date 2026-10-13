@@ -69,3 +69,21 @@ El escáner informa de riesgos presentes en el código; **no** ejecuta Firebase,
 **Criterio de cierre:** evidencias reproducibles y línea base firmada para Admin y tienda; los puntos pendientes anteriores impiden marcar Fase 1 como 100 % completada.
 
 Referencias adicionales: CONTRATO_FIREBASE_ACTUAL.md, MATRIZ_REGRESION.md y REGISTRO_EJECUCION.md.
+
+
+## 7. Continuación: integración preparada (13/10/2026)
+
+Se añadió una batería inicial de 10 casos de caracterización de Firestore contra dos versiones distintas de reglas: la de Admin y una copia fijada desde la tienda pública, commit e1e66d9. La copia se encuentra en tests/firestore/fixtures/public-firestore.rules y no es una nueva regla para desplegar.
+
+También se incorporó firebase.phase1.json (configuración **exclusiva de emulador**) y el flujo .github/workflows/fase-01-baseline.yml con permisos GitHub de solo lectura; no utiliza credenciales ni despliega nada.
+
+**Reproducción con Node 22, Java 21 y acceso a npm:**
+
+    npm install
+    npm run test:baseline
+    npm run build
+    npm run test:firestore
+
+El comando test:firestore inicia y detiene automáticamente el Firestore Emulator con proyecto ficticio demo-appsem-phase1. El test exige FIRESTORE_EMULATOR_HOST antes de acceder a Firestore. Los casos SEC-01 prueban que el defecto sigue presente; un resultado verde representa una línea base, NO la eliminación del problema.
+
+**Limitaciones:** la ejecución local de la suite de integración y compilación depende de instalar paquetes y el emulador; se documentará su resultado real en el registro de ejecución. La versión de reglas desplegada en webs-8b1bf sigue sin verificarse. Falta fijar package-lock.json después de una instalación reproducible.

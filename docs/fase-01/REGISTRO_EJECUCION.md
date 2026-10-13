@@ -37,3 +37,10 @@
 No se añadieron dependencias ni se realizaron cambios al tiempo de ejecución de la aplicación. Los tests se ejecutan sobre módulos puros del repositorio. El escáner textual no tiene poder para verificar permisos desplegados ni para demostrar que un riesgo ha sido corregido.
 
 **Decisión:** Fase 1 abierta; no habilitar Fase 2 como concluida ni anunciar preparación de producción.
+
+
+## Continuación — configuración de integración
+
+Se preparó un flujo CI de GitHub Actions (Node 22 + Java 21) con npm install, 12 tests unitarios, escáner estático, compilación Vite y 10 tests Firestore en emulator. Se fijaron dependencias de desarrollo en package.json (@firebase/rules-unit-testing 3.0.4, firebase-tools 14.19.1) por compatibilidad con SDK Firebase 10 y Node/Java usados. No se cambió ninguna dependencia de producción.
+
+**Nota de honestidad:** no se reclama el éxito de compilación, npm install ni tests de emulador sin ver el resultado efectivo del workflow. Si CI falla, registrar el error y corregir exclusivamente infraestructura/pruebas de Fase 1. La versión de reglas activa del Firebase real continúa desconocida.

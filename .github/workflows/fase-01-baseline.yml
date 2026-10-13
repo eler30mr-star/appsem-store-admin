@@ -1,0 +1,45 @@
+name: "Fase 1 - Baseline y Firebase Emulator"
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fase-01-baseline.yml"
+      - "src/**"
+      - "tests/**"
+      - "scripts/**"
+      - "package.json"
+      - "firestore.rules"
+      - "firebase.phase1.json"
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    name: "Tests, build y emulador (sin despliegue)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: "Instalar dependencias"
+        run: npm install --no-audit --no-fund
+      - name: "Pruebas unitarias actuales"
+        run: npm run test:baseline
+      - name: "Inventario estático (sin acceso a Firebase real)"
+        run: npm run baseline:scan
+      - name: "Compilación React/Vite"
+        run: npm run build
+      - name: "Permisos y compatibilidad de reglas (solo emulador)"
+        run: npm run test:firestore
+
+# No tiene permisos de escritura, credenciales ni acciones de deploy.

@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "test:baseline": "node --test tests/baseline/*.test.mjs",
-    "baseline:scan": "node scripts/baseline-scan.mjs"
+    "baseline:scan": "node scripts/baseline-scan.mjs",
+    "test:firestore": "firebase emulators:exec --config firebase.phase1.json --project demo-appsem-phase1 --only firestore \"node --test --test-concurrency=1 tests/firestore/*.test.mjs\"",
+    "check:phase1": "npm run test:baseline && npm run baseline:scan && npm run build && npm run test:firestore"
   },
   "dependencies": {
     "@vitejs/plugin-react": "4.3.4",
@@ -19,5 +21,8 @@
     "firebase": "10.14.1",
     "lucide-react": "0.468.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "3.0.4",
+    "firebase-tools": "14.19.1"
+  }
 }

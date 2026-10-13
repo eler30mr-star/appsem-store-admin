@@ -43,3 +43,21 @@ La columna Estado distingue caracterización local de pendientes de integración
 5. Mantener en P los casos que no se hayan ejecutado: una lectura de código NO equivale a una prueba aprobada.
 
 La matriz es incremental: su cierre se actualizará al finalizar Fase 1 y fases siguientes.
+
+
+## Continuación: pruebas de Emulator Suite añadidas
+
+Los siguientes casos ahora tienen código en tests/firestore/rules-compat.test.mjs, pero mantienen estado **preparado, no ejecutado** hasta que conste una ejecución de GitHub Actions o local con dependencias instaladas:
+
+- FIRE-01 (Admin): visitante solo lee apps publicadas.
+- FIRE-02 (Admin): visitante no crea ni altera títulos.
+- FIRE-03 (Admin): usuario sin correo autorizado no administra.
+- FIRE-04 (Admin): se documenta que contador anónimo puede incrementarse (defecto abierto).
+- FIRE-05 (Admin): evento downloadClicks del cliente público es rechazado.
+- FIRE-06 (Tienda): visitante lee apps publicadas, no borradores.
+- FIRE-07 (Tienda): el correo autorizado en Admin queda sin privilegios con reglas de tienda.
+- FIRE-08 (Tienda): acepta downloadClicks.
+- FIRE-09 (Tienda): contador anónimo también incrementable (defecto abierto).
+- FIRE-10 (Tienda): no acepta formato de timestamp de Admin.
+
+**IMPORTANTE:** las pruebas son de caracterización, no de seguridad corregida. Ninguna prueba escribe en la base de producción.
