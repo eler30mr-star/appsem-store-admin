@@ -103,3 +103,13 @@ Se generó `package-lock.json` mediante GitHub Actions, sin modificar versiones 
 **Pendiente aún para cierre total:** verificación externa de reglas realmente desplegadas de Firebase, respaldo/restauración seguro en producción y consolidación formal de la línea base tras el último CI.
 
 **Última ejecución CI comprobada:** [#38434289201](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38434289201) — **SUCCESS** con `npm ci`, build y 22 pruebas de caracterización (12 unitarias + 10 Firestore). Quedan pendientes la inspección de reglas activas y la recuperación/restauración de producción.
+
+## 10. Reglas suministradas por el usuario (13/10/2026)
+
+Se recibió una versión completa de Firestore Rules en el chat, archivada literalmente como [FIRESTORE_REGLAS_REPORTADAS_2026-10-13.rules](FIRESTORE_REGLAS_REPORTADAS_2026-10-13.rules). **Origen: texto aportado por el usuario; no se ha consultado la configuración de la consola Firebase para comprobar su despliegue real.** No reemplaza `firestore.rules` del repositorio ni despliega reglas.
+
+Esta versión coincide con el correo administrativo usado por Admin y con `metricsUpdatedAt`, `ratingAverage` y `downloadClicks` utilizados por la tienda pública. Contiene un riesgo crítico conocido: admite incrementos de likes/descargas y modificación de promedios sin vincularlos con registros válidos. Tampoco exige `email_verified` para el administrador.
+
+Se incorporaron 17 subpruebas de caracterización en `tests/firestore/reported-rules.test.mjs` para registrar de manera verificable permisos, denegaciones y debilidades. Estas pruebas **esperan los comportamientos actuales, incluso los inseguros**, y su resultado aprobado no significa que las vulnerabilidades estén corregidas.
+
+**Falta para cierre definitivo de Fase 1:** confirmación independiente del despliegue desde la consola Firebase, respaldo/restauración verificables y acuerdo de política de conservación. El resto de evidencia automatizada ya existe.

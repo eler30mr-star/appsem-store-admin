@@ -84,3 +84,11 @@ Los tests no implican un sistema seguro ni cerrado. Para cerrar Fase 1 también 
 Resultado: **SUCCESS**. Se comprobaron instalación con `npm ci` desde `package-lock.json`, 12 pruebas unitarias, escaneo estático, compilación Vite y las 10 subpruebas Firestore del emulador. La aplicación y reglas operativas no se modificaron. El proyecto de emulación utilizado es `demo-appsem-phase1`.
 
 **Cierre operativo de Fase 1: PENDIENTE** de verificar las reglas efectivamente publicadas de `webs-8b1bf` y un respaldo/restauración antes de modificar producción. La línea base de GitHub y su CI sí están verificadas. Esta fase no corrige SEC-01 ni incompatibilidades INT-01/02; se reservan para las fases posteriores.
+
+## Recepción de reglas compartidas por el usuario — 13/10/2026
+
+- Texto recibido íntegro por chat y copiado a `docs/fase-01/FIRESTORE_REGLAS_REPORTADAS_2026-10-13.rules`.
+- **Estado de procedencia:** aportado por usuario; no verificable aún directamente contra Firebase Console.
+- No se cambiaron reglas productivas, configuración de Firebase, documentos reales ni lógica de la aplicación.
+- Se prepararon **17 pruebas nuevas de caracterización** con proyecto emulado `demo-appsem-phase1`; resultados de ejecución anotados mediante enlace CI tras completarse.
+- Riesgos observados: contador incrementable por terceros sin evento, ratingAverage arbitrario, administración sin verificación explícita, URLs de downloadClicks sin whitelist.
