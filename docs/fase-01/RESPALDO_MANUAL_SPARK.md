@@ -80,5 +80,5 @@ No debe declararse cerrado el respaldo real hasta contar con:
 
 ## Guardar copia en el mismo GitHub (público) — alternativa CIFRADA
 
-Si quieres que la copia también permanezca en GitHub dentro del proyecto, **no subas documentos en claro**. Usa el flujo con cifrado descrito en [RESPALDO_CIFRADO_EN_GITHUB.md](RESPALDO_CIFRADO_EN_GITHUB.md). La copia se almacena bajo \`backups/encrypted/\` y requiere contraseña privada para restaurarse. El repositorio es público, así que mantener la contraseña fuera es esencial.
+Si quieres que la copia también permanezca en GitHub dentro del proyecto, **no subas documentos en claro**. Usa el flujo con cifrado descrito en [RESPALDO_CIFRADO_EN_GITHUB.md](RESPALDO_CIFRADO_EN_GITHUB.md). La copia se almacena bajo `backups/encrypted/` y requiere contraseña privada para restaurarse. El repositorio es público, así que mantener la contraseña fuera es esencial.
 
