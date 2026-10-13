@@ -42,6 +42,8 @@ jobs:
         run: npm run test:backup:codec
       - name: "Validar cifrado y recuperación local"
         run: npm run test:backup:encrypted
+      - name: "Cifrado navegador recuperable con CLI Node"
+        run: node --test tests/backup/browser-interoperability.test.mjs
       - name: "Inventario estático (sin acceso a Firebase real)"
         run: npm run baseline:scan
       - name: "Compilación React/Vite"
