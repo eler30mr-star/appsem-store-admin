@@ -50,3 +50,20 @@ La tienda utiliza getClientId() persistido en localStorage como identidad de int
 - Esquema versionado, estrategias de lectura retrocompatible y migración gradual.
 
 **Prohibición operativa en Fase 1:** no publicar estas reglas, no reemplazar documentos ni borrar colecciones. Esta fase establece evidencia, no soluciones desplegadas.
+
+## 6. Tercera variante: reglas aportadas por el usuario (13/10/2026)
+
+Se almacenó `docs/fase-01/FIRESTORE_REGLAS_REPORTADAS_2026-10-13.rules`. Es una **referencia suministrada por el usuario**, no una extracción de la configuración de Firebase y no reemplaza los dos archivos `firestore.rules` de las aplicaciones.
+
+| Aspecto | Admin GitHub | Tienda GitHub | Reglas aportadas |
+| --- | --- | --- | --- |
+| Correo admin | eler | otro correo | eler |
+| Timestamp métricas | updatedAt | metricsUpdatedAt | metricsUpdatedAt |
+| Clics subcolección | downloads | downloadClicks | downloadClicks |
+| Rating público | ratingSum + count | ratingAverage + count | ratingAverage + count |
+| Correo verificado exigido | no | no | no |
+| Resistencia a métricas anónimas falsas | insuficiente | insuficiente | insuficiente |
+
+**Compatibilidad:** las reglas aportadas se alinean mejor con el frontend de Admin para la identidad y con el frontend público para los nombres de campos e interacciones. No obstante, mantienen problemas graves de integridad en contadores y promedios, y no garantizan unicidad de eventos ni impiden spam. Test suite: 17/17 escenarios ejecutados en GitHub Actions #38438813839.
+
+Antes de cambiar reglas productivas se requiere respaldo, identidad de despliegue confirmada y migración coordinada entre los dos repositorios.

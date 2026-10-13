@@ -92,3 +92,14 @@ Resultado: **SUCCESS**. Se comprobaron instalación con `npm ci` desde `package-
 - No se cambiaron reglas productivas, configuración de Firebase, documentos reales ni lógica de la aplicación.
 - Se prepararon **17 pruebas nuevas de caracterización** con proyecto emulado `demo-appsem-phase1`; resultados de ejecución anotados mediante enlace CI tras completarse.
 - Riesgos observados: contador incrementable por terceros sin evento, ratingAverage arbitrario, administración sin verificación explícita, URLs de downloadClicks sin whitelist.
+
+## CI aprobada para reglas suministradas — 13/10/2026
+
+- Commit de prueba: `0c31cf7b3887f52658415de365f8625d72013394`.
+- Workflow: https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38438813839
+- Resultado: **SUCCESS**; instalación `npm ci`, 12 tests de utilidades, análisis de huellas, compilación Vite, 10 casos previos de Firestore y 17 casos nuevos de reglas proporcionadas.
+- **Total de escenarios de caracterización: 39 (12 unitarios + 27 Firestore), todos aprobados.** Los 27 Firestore se desglosan en 10 casos originales y 17 nuevos.
+- El Emulator Suite confirmó en las reglas aportadas incrementos públicos de contadores sin documento de interacción, promedio de valoración arbitrario, correo administrativo sin `email_verified` y aceptación de `targetUrl` sin restricción de protocolo.
+- Las restricciones de lectura de borradores, edición de datos sensibles y moderación privada también se confirmaron en el emulador.
+- **Limitación:** el archivo de reglas fue proporcionado por el usuario. No hay consulta autenticada que demuestre que coincide byte a byte con las reglas desplegadas en `webs-8b1bf`. La validación de respaldos y restauración también continúa pendiente.
+- La primera ejecución de esta nueva suite falló por una llamada incorrecta a la API del fixture; se reparó en el commit indicado. El resultado verde citado corresponde a la ejecución posterior.

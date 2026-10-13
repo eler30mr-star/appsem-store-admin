@@ -69,3 +69,9 @@ Los siguientes casos ahora tienen código en tests/firestore/rules-compat.test.m
 ## Reglas aportadas — prueba de línea base (pendiente resultado de CI)
 
 El archivo `tests/firestore/reported-rules.test.mjs` contiene 17 escenarios: lectura pública, acceso admin/terceros, email_verified=false, bloqueos de edición, incrementos sin evento, ratingAverage arbitrario, timestamps, downloadClicks, URL no HTTP, likes, comentarios y borradores. La prueba de vulnerabilidades **debe pasar** si demuestra el defecto existente. No es un criterio de seguridad solucionada.
+
+## Pruebas aportadas, resultado comprobado
+
+FIRE-REPORTED-01..17: **17/17 aprobadas** mediante GitHub Actions #38438813839 con Firebase Emulator. Se suman a 10/10 pruebas Firestore anteriores y 12/12 pruebas unitarias. Las pruebas de caracterización que demuestran una vulnerabilidad **son éxitos de detección**, no evidencias de que la vulnerabilidad esté corregida.
+
+Estado de seguridad de métricas: **abierto — alto/crítico**. Estado de verificación de reglas efectivamente desplegadas: **pendiente**.
