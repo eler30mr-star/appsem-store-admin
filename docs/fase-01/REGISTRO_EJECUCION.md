@@ -135,3 +135,12 @@ Manual detallado: \`docs/fase-01/RESPALDO_MANUAL_SPARK.md\`. Hasta completar el 
 - Incorporados `scripts/firestore/encrypted.mjs`, `backup-github.mjs`, `decrypt-github.mjs` y test con una copia **sintética** que comprueba cifrado, descifrado, clave incorrecta y alteración de bytes.
 - CI: [#38464874293](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38464874293) confirma éxito en la tarea de prueba criptográfica y compilación; comprobar estado final del workflow en el enlace.
 - **No hay backup de datos reales** porque se necesitan credenciales ADC del propietario. No hay claves privadas, contraseñas ni documentos reales en el repositorio.
+
+
+## Respaldo desde la sesión Admin — sin Cloud CLI
+
+Se habilitó una nueva página protegida `/backups` en el panel de administración con lectura mediante Firebase Auth ya configurado: colección `apps` y las subcolecciones conocidas `comments`, `likes`, `ratings`, `downloadClicks`. El cifrado AES-256-GCM + PBKDF2 ocurre en el navegador antes de subir a `backups/encrypted/`, usando acceso de escritura limitado de GitHub aportado por el administrador. Se preservó la herramienta de Admin SDK para respaldo administrativo exhaustivo, que sí puede listar subcolecciones bajo padres inexistentes.
+
+**Pruebas CI:** https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38467378793 — SUCCESS, incluyendo creación y descifrado del nuevo formato en las pruebas de interoperabilidad Node/navegador, compilación y pruebas Firestore Emulator.
+
+**Pendiente operativo:** la copia real sigue sin estar en GitHub. El usuario debe acceder al panel con su sesión autorizada, cifrar y subir; ninguna credencial Firebase real está disponible para esta ejecución automatizada del repositorio. No afirmar el cierre de Fase 1 hasta que aparezca un fichero real `*.appsem.enc` bajo `backups/encrypted/`, se valide su integridad y se ensaye una restauración.
