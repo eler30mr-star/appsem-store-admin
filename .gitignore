@@ -1,0 +1,21 @@
+# Build
+node_modules/
+dist/
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+*.log
+
+# Datos de usuarios y respaldos: NUNCA en Git.
+backups/
+backup-data/
+*.ndjson
+*.ndjson.gz
+*.service-account.json
+service-account*.json
+*firebase-adminsdk*.json
+credentials/
+.env
+.env.*
+!.env.example
