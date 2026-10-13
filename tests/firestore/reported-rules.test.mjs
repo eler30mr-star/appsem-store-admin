@@ -27,8 +27,8 @@ test('Reglas aportadas — pruebas de caracterización en emulador, NO hardening
   try {
     const reset = async () => {
       await env.clearFirestore();
-      await env.withSecurityRulesDisabled(async ({ firestore }) => {
-        const db = firestore();
+      await env.withSecurityRulesDisabled(async (context) => {
+        const db = context.firestore();
         await setDoc(doc(db, 'apps', 'public'), seed);
         await setDoc(doc(db, 'apps', 'draft'), { ...seed, status: 'draft' });
         await setDoc(doc(db, 'apps', 'public', 'comments', 'approved'), {
