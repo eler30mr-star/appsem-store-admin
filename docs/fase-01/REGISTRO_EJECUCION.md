@@ -156,3 +156,7 @@ Se comprobó mediante el listado de contenidos de GitHub que **existe efectivame
 - Captura proporcionada por el propietario: el panel confirma **31 documentos (4 apps)** al descargar otra copia cifrada posterior, `appsem-firestore-2026-10-13T21-27-49-729Z-af0c32e9.appsem.enc`.
 
 **Estado actualizado:** requisito «archivo real en el mismo GitHub» = **COMPLETADO (existencia verificable)**. Como el archivo de GitHub está cifrado y no se dispone de su frase secreta, el contenido y su recuento **no se han comprobado independientemente**. El ensayo de descifrado y restauración de esta copia concreta en Firebase Emulator permanece pendiente antes de declarar cerrada totalmente la recuperación de Fase 1. No se publican claves, tokens ni datos privados en Git.
+
+## Cierre operativo de la Fase 1 y arranque de Seguridad (13/10/2026)
+
+Se registra el cierre de la fase de línea base por decisión del responsable y el inicio de la Fase 2 en `main`. Ver `docs/fase-01/CIERRE.md` y `docs/fase-02/README.md`. El respaldo cifrado **existe realmente** bajo `backups/encrypted/`; su recuperación contra Emulator aún **no ha sido ensayada con el archivo real**. No se aplicarán cambios sensibles al Firestore productivo hasta cubrir esa reserva y asegurar la compatibilidad de la tienda pública.

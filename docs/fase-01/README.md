@@ -1,3 +1,5 @@
+> **ESTADO FINAL (13/10/2026): FASE 1 CERRADA ADMINISTRATIVAMENTE.** Ver [acta de cierre](CIERRE.md). Los comentarios previos sobre confirmación de reglas y ausencia de respaldo reflejan etapas anteriores y están superados: el propietario confirmó sus reglas, y GitHub contiene una copia cifrada real. **Reserva técnica vigente:** aún falta probar la restauración del archivo cifrado real antes de cambiar Firestore en producción.
+
 # Fase 1 — Línea base y estabilización (Auditoría 1)
 
 **Fecha de referencia:** 13/10/2026  

@@ -43,7 +43,9 @@ export async function readAppsemFirestore(onProgress = () => {}) {
     throw new Error('Inicia sesión con la cuenta administradora para crear el respaldo.');
   }
   const token = await user.getIdTokenResult();
-  if (token.claims.email !== ADMIN_EMAIL) {
+  if (token.claims.email !== ADMIN_EMAIL ||
+      token.claims.email_verified !== true ||
+      user.emailVerified !== true) {
     throw new Error('La sesión no corresponde al administrador autorizado.');
   }
   if (db.app.options.projectId !== 'webs-8b1bf') {
