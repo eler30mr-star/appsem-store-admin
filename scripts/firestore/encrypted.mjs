@@ -191,3 +191,22 @@ export async function askHidden(label) {
     input.on('data', onData);
   });
 }
+
+/**
+ * Revisa el formato de un archivo cifrado del repositorio sin contraseña.
+ * Solo valida estructura, longitud y parámetros del encabezado:
+ * NO verifica etiqueta AES-GCM, contraseña, contenido ni restaurabilidad.
+ * Nunca devuelve salt, nonce, tag ni ningún dato descifrado.
+ */
+export async function inspectEncryptedBackup(filePath) {
+  const path = resolve(filePath);
+  const { header, start, end } = await readHeader(path);
+  const { size } = await stat(path);
+  return {
+    format: header.format,
+    cipher: header.algo,
+    kdf: header.kdf,
+    bytes: size,
+    ciphertextBytes: end - start + 1
+  };
+}
