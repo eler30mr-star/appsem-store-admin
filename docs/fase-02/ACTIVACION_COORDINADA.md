@@ -47,3 +47,11 @@ Prueba ejecutada durante build productivo de Vercel para el commit de tienda `c5
 - **Siguientes pruebas antes de endurecer reglas:** token Turnstile legítimo (hostname + action) en dominio real, ensayos E2E de interacción con control de permisos y plan de reversión para transición cliente/reglas. No publicar reglas nuevas unilateralmente.
 
 Ver código reproducible: [scripts/check-phase2-live-readiness.mjs](https://github.com/eler30mr-star/appsem-store/blob/main/scripts/check-phase2-live-readiness.mjs).
+
+## Prueba positiva de Turnstile disponible (14/10/2026)
+
+- Tienda pública commit `bacef0d47f99df5d3e38268a419f8083e144e785`, [PR #5](https://github.com/eler30mr-star/appsem-store/pull/5), suite GitHub Actions [#38620848941](https://github.com/eler30mr-star/appsem-store/actions/runs/38620848941) **SUCCESS**.
+- Despliegue `dpl_BE2VHpHJkyHBjeUVwCThFdVbx4kj` en Vercel Production **READY**.
+- Se habilitó temporalmente `PHASE2_TURNSTILE_PROBE_ENABLED=true` solo en Production. Página `https://appsem-store.vercel.app/api/turnstile-probe` confirmada **HTTP 200 HTML** y JavaScript estático confirmado **HTTP 200**. El backend normal `/api/interaction` sigue respondiendo **HTTP 503 de backend apagado**.
+- La nueva prueba solo envía el token a Cloudflare Siteverify con hostname y `action` esperados, **sin importar Firebase ni escribir eventos**. Todavía **PENDIENTE el resultado manual de un visitante**: no afirmar que un token humano fue aceptado antes de ver respuesta real.
+- Tras la prueba, deshabilitar flag temporal y retirar código de prueba, publicando limpieza de producción. Luego abordar transición coordinada de cliente y reglas.
