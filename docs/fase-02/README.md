@@ -75,3 +75,17 @@ Se amplió la suite de integración para llamar al endpoint **real** de Vercel `
 **Seguridad de las pruebas:** sin claves de producción; la API de ensayo requiere explícitamente `METRICS_EMULATOR_TEST=true`, hostname loopback y proyecto ficticio `demo-*`, y se bloquea en Vercel real. La simulación Turnstile **no prueba Cloudflare real ni el despliegue live**.
 
 **Pendientes para activar:** comprobación de recuperación de la copia cifrada real; credenciales y Turnstile de Vercel; preview segura y monitorizada; cambio coordinado de frontend y reglas Firestore. La Fase 2 permanece abierta, sin escrituras de producción desde esta auditoría.
+
+
+## Quinto lote — comentarios antispam y seguridad de IP (14/10/2026)
+
+La tienda pública ahora incorpora la acción `comment` en su API de interacción, compartiendo verificación Cloudflare Turnstile y Firebase Admin SDK. Se valida longitud y contenido, se crea el comentario con `approved: false`, se evita reenvío idéntico durante 15 minutos y se limita a tres envíos por IP/ventana. Las cuentas de comentaristas no se convierten en identidades verificadas: los límites son disuasivos, no garantía absoluta contra spam distribuido.
+
+Se preparó la candidata `docs/fase-02/firestore.hardened.rules` para **bloquear creación directa de comentarios desde el SDK web**, manteniendo lectura de los aprobados y permisos de moderación. **No desplegar estas reglas antes de activar el backend de la tienda**; los clientes antiguos quedarían sin permiso de comentar.
+
+El endpoint también dejó de aceptar `X-Forwarded-For` ordinario como sustituto del encabezado de IP establecido por Vercel. La prueba HTTP verifica denegación de ese intento. Esta protección depende de que el proxy Vercel proporcione `X-Vercel-Forwarded-For` legítimo, circunstancia por confirmar en un despliegue de prueba.
+
+- Pruebas del sistema de comentarios y seguridad anteriores: [Admin #38590441189](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38590441189) — SUCCESS, reglas **46/46**, integración/API **18/18**, y [Store #38590294058](https://github.com/eler30mr-star/appsem-store/actions/runs/38590294058) — SUCCESS.
+- Pruebas del endurecimiento final de IP: [Admin #38590806493](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38590806493), [Store #38590736041](https://github.com/eler30mr-star/appsem-store/actions/runs/38590736041). Comprobar resultado final antes de declararlas aprobadas.
+
+**No hubo despliegue de Firebase ni configuración de secretos Vercel en producción.** Fase 2 continúa hasta validar el backup real recuperable, el dominio y encabezados Vercel, credenciales del servidor y la publicación coordinada de frontend y reglas.
