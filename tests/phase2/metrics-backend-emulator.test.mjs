@@ -98,8 +98,9 @@ test('Integración real del backend con reglas estrictas e historial', async (t)
       await assert.rejects(recordInteraction({
         ...req, payload: { ...req.payload, targetUrl: 'https://no-autorizado.example.com' },
         now: req.now + 1000
-      }), error => error instanceof PublicError);
+      }), error => error instanceof PublicError && error.status === 400);
       assert.equal((await publishedRef.get()).data().downloadsCount, 1);
+      assert.equal((await recordInteraction(req)).alreadyRecorded, true);
     });
     await t.test('Borradores no reciben interacciones por el backend', async () => {
       await assert.rejects(recordInteraction({
