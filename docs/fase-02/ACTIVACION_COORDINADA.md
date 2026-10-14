@@ -55,3 +55,12 @@ Ver código reproducible: [scripts/check-phase2-live-readiness.mjs](https://gith
 - Se habilitó temporalmente `PHASE2_TURNSTILE_PROBE_ENABLED=true` solo en Production. Página `https://appsem-store.vercel.app/api/turnstile-probe` confirmada **HTTP 200 HTML** y JavaScript estático confirmado **HTTP 200**. El backend normal `/api/interaction` sigue respondiendo **HTTP 503 de backend apagado**.
 - La nueva prueba solo envía el token a Cloudflare Siteverify con hostname y `action` esperados, **sin importar Firebase ni escribir eventos**. Todavía **PENDIENTE el resultado manual de un visitante**: no afirmar que un token humano fue aceptado antes de ver respuesta real.
 - Tras la prueba, deshabilitar flag temporal y retirar código de prueba, publicando limpieza de producción. Luego abordar transición coordinada de cliente y reglas.
+
+## Validación positiva completada y ruta temporal retirada (14/10/2026)
+
+- **PASS de token humano real:** el propietario completó la verificación desde `https://appsem-store.vercel.app/api/turnstile-probe`; la pantalla mostró «Verificación real aprobada. Firebase no se modificó.». La página solo muestra este estado después de recibir respuesta HTTP 200 con `verified: true` desde el servidor, el cual llama a Cloudflare Siteverify validando `success`, `hostname` y `action: appsem-metrics`.
+- El mecanismo temporal no importó Firebase ni escribió métricas. No se asume que esta prueba por sí sola cubra E2E de likes, valoraciones, descargas y comentarios.
+- Se cambió el interruptor Production `PHASE2_TURNSTILE_PROBE_ENABLED` a `false` en Vercel.
+- Se eliminaron `api/turnstile-probe.js`, `public/turnstile-probe.js` y `tests/turnstile-probe.test.mjs` de la tienda en [PR #6](https://github.com/eler30mr-star/appsem-store/pull/6), merge `c0374b0b4c4315a5281b5422946779cdf62ccfd3`. El despliegue Production `dpl_Ct6Am3WuJnQcb2WwJNwUcFbxHZp7` fue **READY**.
+- Verificación HTTP posterior al despliegue: `GET /api/turnstile-probe` **404**, `GET /turnstile-probe.js` **404**; `GET /api/interaction` conserva **503 JSON** indicando backend seguro no habilitado. Ninguna regla de Firestore se ha publicado.
+- **Siguiente hito:** ensayar el flujo completo cliente/API (idempotencia, comentarios pendientes, rates y compatibilidad con service worker/clientes anteriores) con plan de reversión, antes de configurar `METRICS_BACKEND_ENABLED=true` y `VITE_METRICS_BACKEND=server` y publicar reglas endurecidas de forma coordinada.
