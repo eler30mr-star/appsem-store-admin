@@ -19,7 +19,8 @@
     "firestore:decrypt": "node scripts/firestore/decrypt-github.mjs",
     "test:backup:encrypted": "node --test tests/backup/encryption.test.mjs",
     "test:phase2:integration": "firebase emulators:exec --config firebase.phase1.json --project demo-appsem-phase2-integration --only firestore \"node --test --test-concurrency=1 tests/phase2/*.test.mjs\"",
-    "test:phase3:integrity": "firebase emulators:exec --config firebase.phase1.json --project demo-appsem-phase3 --only firestore \"node --test --test-concurrency=1 tests/phase3/*.test.mjs\""
+    "test:phase3:integrity": "firebase emulators:exec --config firebase.phase1.json --project demo-appsem-phase3 --only firestore \"node --test --test-concurrency=1 tests/phase3/*.test.mjs\"",
+    "phase3:audit:read-only": "node scripts/phase3/audit-integrity.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "4.3.4",
