@@ -66,3 +66,12 @@ La **migración real** requiere respaldo reciente y recuperable, modo dry-run, r
 - restaurar como borrador con datos intactos.
 
 **No modificar** reglas Firebase ni activar funciones de borrado masivo al desplegar este cambio. Las garantías de prueba se limitan al código y a Emulator; producción se verificará funcionalmente después de incorporar el PR.
+
+
+## Estado operativo de la primera entrega (14/10/2026)
+
+- **GitHub main:** implementación entregada en commit `1ce91cd620bf0a073c72167d46c64b004a275c71` ([PR #10](https://github.com/eler30mr-star/appsem-store-admin/pull/10)).
+- **Pruebas:** CI del PR [#38651856327](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38651856327) y de main [#38652005845](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38652005845) **SUCCESS**, incluyendo transacciones de Fase 3, Firebase Emulator, integración de Fase 2 y Vite build.
+- **Producción:** no publicada la nueva entrega. Vercel rechazó el despliegue manual con HTTP 402 `api-deployments-free-per-day`, límite diario de despliegues en plan Hobby. El último deployment Production verificado era anterior a `1ce91cd`; no afirmar que los botones Archivar/Restaurar ya están disponibles en la web.
+- **Pendiente de entrega productiva:** crear despliegue Production desde `main` cuando el límite de Vercel permita nuevos deploys; comprobar SHA READY, abrir Admin y probar archivado/restauración con **app de prueba** (no con una publicada real), y moderación repetida con comentarios sintéticos o preparados. No publicar cambios de reglas.
+- **Pendiente fase 3:** conciliación read-only de métricas y diseño/ensayo de migración reversible sin pérdida de datos.
