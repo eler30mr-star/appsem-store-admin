@@ -48,3 +48,14 @@ Ninguna política basada solo en un ID de localStorage demuestra una identidad r
 Configurar secretos de servicio Firebase y Turnstile en Vercel, validar el backend en entorno aislado, comprobar recuperación de la copia real de GitHub y realizar **un solo corte coordinado** de cliente + reglas. No aplicar la candidata `docs/fase-02/firestore.hardened.rules` de antemano: causaría denegaciones en likes, ratings y descargas mientras la tienda utilice Firestore desde el navegador.
 
 **Reserva de seguridad:** ID de navegador reiniciable y CAPTCHAs no eliminan totalmente el abuso; se requieren monitoreo y política de retención de cuotas. El backend tampoco garantiza por sí solo que un clic sea una instalación.
+
+
+## Tercer lote — Integración real en Emulator verificada (14/10/2026)
+
+Se ejecutaron conjuntamente las reglas candidatas de Admin y el código real del servidor de la tienda pública. El workflow descarga la versión `main` del repositorio `appsem-store` para ensayar su backend con Firebase Admin SDK y datos ficticios en un proyecto `demo-*`.
+
+**Resultado: [GitHub Actions #38582818238](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38582818238) — SUCCESS.** Pruebas Firestore 46/46 y pruebas de integración 7/7, todas aprobadas.
+
+Se verificó: rechazo de incrementos públicos, lectura restringida de likes y valoraciones, likes/rating/descargas transaccionales, deduplicación, bloqueo de borradores y compatibilidad con IDs antiguos. La prueba encontró un error real al deduplicar descargas sin validar antes la URL; quedó corregido en la tienda pública (commit `9fb452f`).
+
+**Producción:** la tienda y Firebase siguen usando las reglas vigentes. Todavía falta ensayo de restauración del respaldo cifrado, configuración autorizada de credenciales en Vercel y despliegue coordinado del cliente y las reglas. No activar las reglas nuevas de forma aislada.
