@@ -98,6 +98,28 @@ test('Vercel HTTP: validación + captcha + operación con Admin SDK aislada', as
       assert.deepEqual(result.body, { liked: true, rated: null });
       assert.equal(verifiedRequests.length, before);
     });
+    await t.test('Modo read-only: GET real Emulator aprobado, POST siempre denegado sin escribir', async () => {
+      process.env.METRICS_BACKEND_ENABLED = 'read-only';
+      try {
+        const before = await db.doc('apps/' + appId).get();
+        const callsBefore = verifiedRequests.length;
+        const get = await invoke(request('GET', { query: { appId, visitorId: visitor } }));
+        assert.equal(get.statusCode, 200);
+        assert.equal(get.body.liked, true);
+        const denied = await invoke(request('POST', { body: {
+          ...sample, action: 'rating', rating: 5
+        } }));
+        assert.equal(denied.statusCode, 503);
+        assert.match(denied.body.error, /todavía no habilitado/i);
+        assert.equal(verifiedRequests.length, callsBefore,
+          'No usar token Turnstile para un POST bloqueado');
+        const after = await db.doc('apps/' + appId).get();
+        assert.deepEqual(after.data(), before.data(),
+          'No escribir ni siquiera un contador en el modo read-only');
+      } finally {
+        process.env.METRICS_BACKEND_ENABLED = 'true';
+      }
+    });
     await t.test('POST desde origen ajeno y con Content-Type inválido se rechaza', async () => {
       const cross = await invoke(request('POST', {
         body: { ...sample, action: 'rating', rating: 2 },
