@@ -109,6 +109,22 @@ test('Integración real del backend con reglas estrictas e historial', async (t)
       }), error => error instanceof PublicError && error.status === 404);
       assert.equal((await db.doc('apps/draft').get()).data().likesCount, 0);
     });
+    await t.test('Comentarios: backend crea pendiente, evita duplicados y reglas niegan acceso público', async () => {
+      const commentReq = params('comment', 'b673698f-9402-4f6e-a0d2-454d55b10231',
+        { name: 'María', comment: 'Esta aplicación funciona correctamente.' });
+      assert.equal((await recordInteraction(commentReq)).alreadyRecorded, false);
+      assert.equal((await recordInteraction(commentReq)).alreadyRecorded, true);
+      const list = await db.collection('apps').doc(appId).collection('comments').get();
+      assert.equal(list.size, 1);
+      const pending = list.docs[0];
+      assert.equal(pending.data().approved, false);
+      await assertFails(getDoc(doc(anon(), pending.ref.path)));
+      await assertFails(setDoc(doc(anon(), 'apps', appId, 'comments', 'public-injected'), {
+        name: 'Otro', comment: 'No debe publicarse directamente', approved: false,
+        createdAt: serverTimestamp()
+      }));
+      await assertSucceeds(getDoc(doc(admin(), pending.ref.path)));
+    });
     await t.test('No se duplican interacciones históricas antes del corte', async () => {
       const legacy = 'aa4bb31f-774e-413c-b7db-44d0ce90ec2e';
       await db.doc('apps/' + appId + '/likes/' + legacy).set({ createdAt: FieldValue.serverTimestamp() });

@@ -144,6 +144,27 @@ test('Vercel HTTP: validación + captcha + operación con Admin SDK aislada', as
       assert.equal(valid.statusCode, 200);
       assert.equal((await db.doc('apps/' + appId).get()).data().downloadsCount, 1);
     });
+    await t.test('Comentario se crea pendiente y repetir texto no genera otro registro', async () => {
+      const body = { ...sample, action: 'comment', name: 'María',
+        comment: 'Una opinión detallada y positiva sobre la app.' };
+      const first = await invoke(request('POST', { body }));
+      assert.equal(first.statusCode, 200);
+      assert.equal(first.body.alreadyRecorded, false);
+      const second = await invoke(request('POST', { body }));
+      assert.equal(second.statusCode, 200);
+      assert.equal(second.body.alreadyRecorded, true);
+      const comments = await db.collection('apps').doc(appId).collection('comments').get();
+      assert.equal(comments.size, 1);
+      assert.equal(comments.docs[0].data().approved, false);
+    });
+    await t.test('Comentario inválido no pasa al servidor', async () => {
+      const invalid = await invoke(request('POST', {
+        body: { ...sample, action: 'comment', name: 'A', comment: 'No' }
+      }));
+      assert.equal(invalid.statusCode, 400);
+      const comments = await db.collection('apps').doc(appId).collection('comments').get();
+      assert.equal(comments.size, 1);
+    });
     await t.test('El endpoint sigue inactivo sin METRICS_BACKEND_ENABLED', async () => {
       process.env.METRICS_BACKEND_ENABLED = 'false';
       try {

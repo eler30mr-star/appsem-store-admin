@@ -117,11 +117,12 @@ test('Fase 2 — reglas preparadas para backend confiable', async (t) => {
         targetUrl: 'javascript:alert(1)', createdAt: serverTimestamp()
       }));
     });
-    await t.test('Visitante puede publicar comentario pendiente con esquema correcto', async () => {
+    await t.test('Visitante no puede enviar comentarios directos; solo Admin o backend', async () => {
       await reset();
-      await assertSucceeds(setDoc(doc(anon(), 'apps', 'pub', 'comments', 'nuevo'), {
-        name: 'Ana', comment: 'Comentario permitido', approved: false, createdAt: serverTimestamp()
-      }));
+      const comment = { name: 'Ana', comment: 'Comentario pendiente', approved: false,
+        createdAt: serverTimestamp() };
+      await assertFails(setDoc(doc(anon(), 'apps', 'pub', 'comments', 'nuevo'), comment));
+      await assertSucceeds(setDoc(doc(admin(), 'apps', 'pub', 'comments', 'nuevo'), comment));
     });
     await t.test('Visitante no puede autoaprobar comentarios', async () => {
       await reset();
