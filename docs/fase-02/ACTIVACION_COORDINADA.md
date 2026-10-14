@@ -35,3 +35,15 @@ Los pasos 2 y 3 ocurren en servicios diferentes y **no son atómicos**. Deben ha
 **Acción privada urgente del propietario:** eliminar de GitHub `Settings → Secrets and variables → Actions` el secreto temporal `APPSEM_BACKUP_RECOVERY_PASSPHRASE`. Conservar la frase original en custodia privada fuera de GitHub.
 
 La aprobación de recuperación cierra el requisito de backup restaurable, **no** implica que el backend de métricas ya esté autenticado frente a Firebase real, que Cloudflare Siteverify haya sido comprobado en live ni que se hayan publicado reglas endurecidas. Mantener deshabilitados `VITE_METRICS_BACKEND=server` y `METRICS_BACKEND_ENABLED=true` hasta superar las pruebas de activación coordinada. El respaldo no incluye Firebase Authentication, Storage ni índices.
+
+## Validación real no destructiva de Vercel + Firebase + Cloudflare (14/10/2026)
+
+Prueba ejecutada durante build productivo de Vercel para el commit de tienda `c5c1215e8de8dd4ddf11a564976904433425865b`, deployment `dpl_DSYth7rAJ6Cp1WBoy5ATvUFArdcF` (**READY**). Función de diagnóstico ejecutada solo porque se activó temporalmente `PHASE2_READINESS_CHECK=true`, sin activar `METRICS_BACKEND_ENABLED` ni `VITE_METRICS_BACKEND`.
+
+- **Firebase Admin real — PASS:** Vercel autenticó la cuenta de servicio y consultó como máximo 1 documento Firestore en modo lectura, sin mostrar datos ni realizar escrituras.
+- **Cloudflare Siteverify real — PASS negativo:** se envió deliberadamente un token falso y Cloudflare respondió con rechazo `invalid-input-response`, no con error de secreto. **No implica una prueba positiva de Turnstile real**.
+- **Sitio — READY:** build y despliegue finalizados, frontend anterior sigue activo.
+- Después de la prueba se cambió `PHASE2_READINESS_CHECK` a `false` para futuras compilaciones. Solo se registraron estados genéricos, sin secretos ni valores de documentos.
+- **Siguientes pruebas antes de endurecer reglas:** token Turnstile legítimo (hostname + action) en dominio real, ensayos E2E de interacción con control de permisos y plan de reversión para transición cliente/reglas. No publicar reglas nuevas unilateralmente.
+
+Ver código reproducible: [scripts/check-phase2-live-readiness.mjs](https://github.com/eler30mr-star/appsem-store/blob/main/scripts/check-phase2-live-readiness.mjs).
