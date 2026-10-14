@@ -1,5 +1,7 @@
 # Fase 3 — Integridad y contrato de datos v1
 
+**Documento de continuación entre chats:** [AVANCE_Y_PENDIENTES_2026-10-14.md](./AVANCE_Y_PENDIENTES_2026-10-14.md).
+
 **Proyecto:** Appsem Store + Appsem Store Admin  
 **Firebase:** `webs-8b1bf`  
 **Estado:** implementación incremental; NO migrar ni borrar datos reales automáticamente  
