@@ -1,7 +1,7 @@
-import { Edit, Eye, EyeOff, Plus, Search, Trash2 } from 'lucide-react';
+import { Archive, ArchiveRestore, Edit, Eye, EyeOff, Plus, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { deleteApp, subscribeToApps, updateAppStatus } from '../services/appsService';
+import { archiveApp, restoreApp, subscribeToApps, updateAppStatus } from '../services/appsService';
 import { formatNumber, formatRating } from '../utils/formatters';
 
 export default function AppsPage() {
@@ -40,18 +40,28 @@ export default function AppsPage() {
     });
   }, [apps, queryText, statusFilter]);
 
-  const handleDelete = async (app) => {
-    const confirmed = window.confirm(`¿Eliminar definitivamente la app "${app.title}"?`);
+  const handleArchive = async (app) => {
+    const confirmed = window.confirm(`¿Archivar "${app.title}"? Dejará de ser pública, pero se conservarán comentarios, likes y valoraciones.`);
     if (!confirmed) return;
-
+    setError('');
     try {
-      await deleteApp(app.id);
+      await archiveApp(app.id);
     } catch (err) {
-      setError(err.message || 'No se pudo eliminar la app.');
+      setError(err.message || 'No se pudo archivar la app.');
+    }
+  };
+
+  const handleRestore = async (app) => {
+    setError('');
+    try {
+      await restoreApp(app.id);
+    } catch (err) {
+      setError(err.message || 'No se pudo restaurar la app.');
     }
   };
 
   const handleToggle = async (app) => {
+    if (app.status === 'archived') return;
     try {
       await updateAppStatus(app.id, app.status === 'published' ? 'draft' : 'published');
     } catch (err) {
@@ -65,7 +75,7 @@ export default function AppsPage() {
         <div>
           <span className="eyebrow">Catálogo</span>
           <h2>Apps de la tienda</h2>
-          <p>Crea, edita, publica u oculta las apps que aparecerán en la página pública.</p>
+          <p>Crea, publica, oculta o archiva apps sin perder su historial ni estadísticas.</p>
         </div>
         <Link className="primary-button" to="/apps/new">
           <Plus size={18} />
@@ -86,6 +96,7 @@ export default function AppsPage() {
           <option value="all">Todos los estados</option>
           <option value="published">Publicadas</option>
           <option value="draft">Ocultas / borrador</option>
+          <option value="archived">Archivadas</option>
         </select>
       </section>
 
@@ -123,7 +134,7 @@ export default function AppsPage() {
                     <td>{app.category || 'Sin categoría'}</td>
                     <td>
                       <span className={app.status === 'published' ? 'status published' : 'status draft'}>
-                        {app.status === 'published' ? 'Publicada' : 'Oculta'}
+                        {app.status === 'published' ? 'Publicada' : app.status === 'archived' ? 'Archivada' : 'Oculta'}
                       </span>
                     </td>
                     <td>
@@ -135,15 +146,23 @@ export default function AppsPage() {
                     </td>
                     <td>
                       <div className="row-actions">
-                        <Link className="icon-button" to={`/apps/${app.id}/edit`} title="Editar">
-                          <Edit size={17} />
-                        </Link>
-                        <button className="icon-button" onClick={() => handleToggle(app)} title={app.status === 'published' ? 'Ocultar' : 'Publicar'} type="button">
-                          {app.status === 'published' ? <EyeOff size={17} /> : <Eye size={17} />}
-                        </button>
-                        <button className="icon-button danger" onClick={() => handleDelete(app)} title="Eliminar" type="button">
-                          <Trash2 size={17} />
-                        </button>
+                        {app.status !== 'archived' ? (
+                          <>
+                            <Link className="icon-button" to={`/apps/${app.id}/edit`} title="Editar">
+                              <Edit size={17} />
+                            </Link>
+                            <button className="icon-button" onClick={() => handleToggle(app)} title={app.status === 'published' ? 'Ocultar' : 'Publicar'} type="button">
+                              {app.status === 'published' ? <EyeOff size={17} /> : <Eye size={17} />}
+                            </button>
+                            <button className="icon-button danger" onClick={() => handleArchive(app)} title="Archivar sin borrar datos" type="button">
+                              <Archive size={17} />
+                            </button>
+                          </>
+                        ) : (
+                          <button className="icon-button" onClick={() => handleRestore(app)} title="Restaurar como borrador" type="button">
+                            <ArchiveRestore size={17} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
