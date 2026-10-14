@@ -54,7 +54,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: eler30mr-star/appsem-store
-          ref: main
+          ref: 3040f7d9bc790675615d6cb470e41ce9348d3181
           path: _store_phase2
           persist-credentials: false
       - name: "Integración backend tienda + Admin SDK + reglas (solo Emulator)"
