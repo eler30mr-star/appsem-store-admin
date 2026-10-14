@@ -37,6 +37,8 @@ jobs:
           java-version: "21"
       - name: "Instalar dependencias"
         run: npm ci --no-audit --no-fund
+      - name: "Validar sintaxis de recuperación privada en GitHub Actions"
+        run: node --check scripts/firestore/check-real-backup-recovery.mjs
       - name: "Pruebas unitarias actuales"
         run: npm run test:baseline
       - name: "Pruebas de serialización para backups (sin Firebase real)"
