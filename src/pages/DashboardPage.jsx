@@ -29,14 +29,15 @@ export default function DashboardPage() {
       (acc, app) => {
         acc.totalApps += 1;
         if (app.status === 'published') acc.published += 1;
-        if (app.status !== 'published') acc.drafts += 1;
+        if (app.status === 'draft') acc.drafts += 1;
+        if (app.status === 'archived') acc.archived += 1;
         acc.likes += Number(app.likesCount || 0);
         acc.downloads += Number(app.downloadsCount || 0);
         acc.comments += Number(app.commentsCount || 0);
         acc.ratingCount += Number(app.ratingCount || 0);
         return acc;
       },
-      { totalApps: 0, published: 0, drafts: 0, likes: 0, downloads: 0, comments: 0, ratingCount: 0 }
+      { totalApps: 0, published: 0, drafts: 0, archived: 0, likes: 0, downloads: 0, comments: 0, ratingCount: 0 }
     );
   }, [apps]);
 
@@ -64,7 +65,7 @@ export default function DashboardPage() {
       ) : (
         <>
           <section className="stats-grid">
-            <StatCard icon={AppWindow} label="Apps totales" value={stats.totalApps} note={`${stats.published} publicadas · ${stats.drafts} ocultas`} />
+            <StatCard icon={AppWindow} label="Apps totales" value={stats.totalApps} note={`${stats.published} publicadas · ${stats.drafts} ocultas · ${stats.archived} archivadas`} />
             <StatCard icon={Heart} label="Me gusta" value={stats.likes} note="Generados en la página pública" />
             <StatCard icon={Download} label="Clics de descarga" value={stats.downloads} note="Clics hacia Google Play" />
             <StatCard icon={Star} label="Valoraciones" value={stats.ratingCount} note="Votos recibidos" />
@@ -85,14 +86,14 @@ export default function DashboardPage() {
                 <p className="empty-state">Todavía no hay apps creadas.</p>
               ) : (
                 latestApps.map((app) => (
-                  <Link className="preview-row" to={`/apps/${app.id}/edit`} key={app.id}>
+                  <Link className="preview-row" to={app.status === 'archived' ? '/apps' : `/apps/${app.id}/edit`} key={app.id}>
                     <img src={app.iconUrl || '/placeholder-icon.png'} alt="" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                     <div>
                       <strong>{app.title}</strong>
                       <span>{app.category || 'Sin categoría'} · ⭐ {formatRating(app)}</span>
                     </div>
                     <em className={app.status === 'published' ? 'status published' : 'status draft'}>
-                      {app.status === 'published' ? 'Publicada' : 'Oculta'}
+                      {app.status === 'published' ? 'Publicada' : app.status === 'archived' ? 'Archivada' : 'Oculta'}
                     </em>
                   </Link>
                 ))
