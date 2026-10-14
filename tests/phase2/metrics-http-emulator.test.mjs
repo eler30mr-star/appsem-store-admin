@@ -105,6 +105,11 @@ test('Vercel HTTP: validación + captcha + operación con Admin SDK aislada', as
         body: { ...sample, action: 'rating', rating: 2 }, size: 99999
       }));
       assert.equal(tooLarge.statusCode, 413);
+      const tooLargeActual = await invoke(request('POST', {
+        body: { ...sample, action: 'rating', rating: 2, junk: 'x'.repeat(8200) },
+        size: 10
+      }));
+      assert.equal(tooLargeActual.statusCode, 413);
       assert.equal((await db.doc('apps/' + appId).get()).data().ratingCount, 0);
     });
     await t.test('Turnstile rechaza token inválido sin persistir rating', async () => {
@@ -116,10 +121,12 @@ test('Vercel HTTP: validación + captcha + operación con Admin SDK aislada', as
       fake.success = true;
       assert.equal((await db.doc('apps/' + appId).get()).data().ratingCount, 0);
     });
-    await t.test('Rating válido usa API, actualiza promedio y registro de backend', async () => {
-      const result = await invoke(request('POST', {
+    await t.test('Rating válido sin Content-Length funciona en HTTP/2', async () => {
+      const req = request('POST', {
         body: { ...sample, action: 'rating', rating: 4 }
-      }));
+      });
+      delete req.headers['content-length'];
+      const result = await invoke(req);
       assert.equal(result.statusCode, 200);
       assert.equal(result.body.ratingAverage, 4);
       const current = (await db.doc('apps/' + appId).get()).data();
