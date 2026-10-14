@@ -26,6 +26,8 @@ jobs:
           java-version: "21"
       - name: Instalar dependencias (sin acceder al secreto)
         run: npm ci --no-audit --no-fund
+      - name: Verificar guardas antes de utilizar el secreto
+        run: node --test tests/backup/recovery-guard.test.mjs
       - name: Restaurar respaldo únicamente en Emulator (sin artefactos)
         env:
           APPSEM_BACKUP_RECOVERY_PASSPHRASE: ${{ secrets.APPSEM_BACKUP_RECOVERY_PASSPHRASE }}

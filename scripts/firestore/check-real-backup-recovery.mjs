@@ -12,6 +12,7 @@ import { initializeApp, deleteApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { decryptBackup } from './encrypted.mjs';
 import { restoreToEmulator } from './archive.mjs';
+import { assertRecoveryEnvironment } from './recovery-guard.mjs';
 
 const DEMO_PROJECT = 'demo-appsem-phase2-recovery';
 const encryptedFile = resolve(
@@ -32,14 +33,7 @@ async function countEmulatorDocuments(db) {
 
 async function main() {
   // Fallar antes de crear archivos si no es un ensayo manual y aislado.
-  if (process.env.GITHUB_ACTIONS !== 'true' ||
-      process.env.GITHUB_EVENT_NAME !== 'workflow_dispatch' ||
-      process.env.GCLOUD_PROJECT !== DEMO_PROJECT ||
-      !/^(localhost|127\\.0\\.0\\.1):8080$/.test(process.env.FIRESTORE_EMULATOR_HOST || '') ||
-      process.env.GOOGLE_APPLICATION_CREDENTIALS ||
-      process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
-    throw new Error('Entorno denegado: únicamente GitHub Actions manual + Firebase Emulator demo.');
-  }
+  assertRecoveryEnvironment(process.env);
 
   const passphrase = process.env.APPSEM_BACKUP_RECOVERY_PASSPHRASE;
   delete process.env.APPSEM_BACKUP_RECOVERY_PASSPHRASE;
