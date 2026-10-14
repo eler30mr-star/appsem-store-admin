@@ -89,3 +89,7 @@ El endpoint también dejó de aceptar `X-Forwarded-For` ordinario como sustituto
 - Pruebas del endurecimiento final de IP: [Admin #38590806493](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38590806493), [Store #38590736041](https://github.com/eler30mr-star/appsem-store/actions/runs/38590736041). Comprobar resultado final antes de declararlas aprobadas.
 
 **No hubo despliegue de Firebase ni configuración de secretos Vercel en producción.** Fase 2 continúa hasta validar el backup real recuperable, el dominio y encabezados Vercel, credenciales del servidor y la publicación coordinada de frontend y reglas.
+
+## Resultado confirmado del lote antispam (14/10/2026)
+
+CI final: [Tienda #38590736041](https://github.com/eler30mr-star/appsem-store/actions/runs/38590736041) SUCCESS, 20/20 pruebas; [Admin #38590806493](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38590806493) SUCCESS, 46/46 pruebas de reglas y 19/19 de integración HTTP/SDK, sin fallos. Quedan pendientes verificación de restauración del backup real y activación coordinada de credenciales, Turnstile y reglas con Vercel. No se han desplegado reglas productivas.
