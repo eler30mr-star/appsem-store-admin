@@ -50,5 +50,14 @@ jobs:
         run: npm run build
       - name: "Permisos y compatibilidad de reglas (solo emulador)"
         run: npm run test:firestore
+      - name: "Obtener tienda pública para integración real"
+        uses: actions/checkout@v4
+        with:
+          repository: eler30mr-star/appsem-store
+          ref: main
+          path: _store_phase2
+          persist-credentials: false
+      - name: "Integración backend tienda + Admin SDK + reglas (solo Emulator)"
+        run: npm run test:phase2:integration
 
 # No tiene permisos de escritura, credenciales ni acciones de deploy.
