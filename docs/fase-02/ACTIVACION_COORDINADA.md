@@ -149,3 +149,27 @@ Hallazgos:
 - Se incorporó en Store `main` la prueba reproducible `scripts/audit-live-firestore-rules.mjs` (PR #12, commit `896b360c349021cc6b54e4cc209a8c1b565b2c39`) para futuras regresiones. Las pruebas en Emulator adicionales ya verificaron que clientes web no pueden escribir likes, rating, comentarios ni contadores bajo estas reglas.
 - **Pendiente de cierre funcional completo:** comprobar una sesión de administrador real con correo verificado y moderación de comentarios después de la publicación. No se ha probado desde estas herramientas el login privilegiado de Firebase Authentication. Tampoco se realizó una escritura real deliberada contra Firestore para probar su rechazo: no sería no-destructiva si las reglas se hubiesen revertido.
 - **Precaución:** pestañas antiguas y caché del Service Worker pueden mantener JavaScript previo, pero las reglas actuales de Firestore deniegan sus escrituras directas. Si algún visitante observa un error, debe actualizar la página. Si surge un problema de admin, comprobar primero que `eler30.mr@gmail.com` tenga `email_verified == true`, antes de considerar reversión de reglas.
+
+## Cierre funcional de la Fase 2 — 14/10/2026
+
+**ESTADO: FASE 2 CERRADA FUNCIONALMENTE**, con controles de mantenimiento pendientes de seguimiento. Los apartados anteriores de este documento son la cronología: las indicaciones antiguas de 'NO publicar reglas', 'PENDIENTE' o 'backend read-only' ya fueron superadas y NO describen el estado actual.
+
+### Confirmación del propietario tras publicación de reglas
+
+- Tras publicar las reglas reforzadas en Firebase Console, el propietario **inició sesión en Appsem Store Admin y aprobó comentarios pendientes exitosamente**. Esto es una comprobación manual real del flujo privilegiado y moderación posterior al corte. No se le pidió facilitar credenciales ni se accedió a su sesión.
+- Antes del corte, el propietario confirmó que en la tienda funcionaron **Me gusta, Valoración, Comentarios y Descarga** mediante el cliente con `VITE_METRICS_BACKEND=server`.
+- El propietario guardó una copia externa de las reglas previas. Conservarla para una reversión específica de reglas, no para restaurar indiscriminadamente datos.
+
+### Evidencia técnica de producción
+
+- Firebase Web SDK anónimo contra proyecto real `webs-8b1bf`: listado de apps publicadas, ficha pública y comentarios aprobados permitidos; lecturas de likes, valoraciones individuales, historial de descargas y consultas de comentarios pendientes sin filtro denegadas. [CI Store #38649931569](https://github.com/eler30mr-star/appsem-store/actions/runs/38649931569): **SUCCESS**.
+- Rechazos de solicitudes POST desde otro origen y de tokens falsos confirmados por Vercel, sin escribir datos. [CI Store #38639775444](https://github.com/eler30mr-star/appsem-store/actions/runs/38639775444): **SUCCESS**.
+- Reglas y compatibilidad del backend probadas con Firebase Emulator, sin usar el proyecto productivo para pruebas de escritura. [CI Admin #38650174944](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38650174944): **SUCCESS**.
+- Respaldo cifrado real del 13/10/2026 descifrado y restaurado previamente en Emulator: **31 documentos**. [CI Admin #38615610469](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38615610469): **SUCCESS**. Se verificó la copia de aquella fecha, no una copia continua de cada cambio posterior.
+
+### Seguimiento operativo, no bloqueadores de cierre
+
+- Mantener auditoría de reglas reales, pruebas E2E y monitoreo de errores tras cambios futuros. Cualquier pestaña con código cliente antiguo puede intentar escrituras directas y recibir `permission-denied`; recomendar actualizar.
+- Existe una advertencia Node.js deprecada `DEP0169 url.parse()` en logs de `/api/interaction`. No se ha demostrado fallo funcional ligado a esa advertencia; investigarla como mantenimiento separado.
+- No se ha enviado deliberadamente una escritura anónima a producción para probar rechazo: se ensayó exhaustivamente en Emulator y en producción se verificaron **denegaciones de lectura** mediante SDK anónimo.
+- El cierre documentado se apoya en las confirmaciones del propietario y las pruebas anteriores; no supone que todas las posibilidades de abuso estén eliminadas ni constituye una auditoría externa independiente.
