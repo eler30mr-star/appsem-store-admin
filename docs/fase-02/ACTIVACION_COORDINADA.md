@@ -21,3 +21,17 @@
 Los pasos 2 y 3 ocurren en servicios diferentes y **no son atómicos**. Deben hacerse con supervisión y posibilidad de revertir el despliegue del cliente y restaurar la configuración previa de reglas. Nunca reemplazar datos reales sin determinar antes su estado y el alcance del incidente.
 
 **Reserva:** hasta disponer de credenciales autorizadas, prueba de recuperación y comprobaciones de Vercel, la Fase 2 sigue abierta. Ninguna acción de este documento se ejecutó en producción.
+
+## Verificación REAL de recuperabilidad (14/10/2026)
+
+**Requisito de restauración: APROBADO**, ver [GitHub Actions #38615610469](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38615610469).
+
+- Se utilizó exclusivamente el archivo real cifrado `backups/encrypted/appsem-firestore-2026-10-13T21-27-24-109Z-b3f473bd.appsem.enc` y un secreto temporal de GitHub Actions suministrado por el propietario.
+- Resultado registrado: `PASS: respaldo real descifrado, íntegro y restaurado solo en Firebase Emulator.`
+- **31 documentos verificados**: descifrados, validados y restaurados en un Firestore Emulator con ID ficticio `demo-appsem-phase2-recovery`; el recuento de lectura coincide con los documentos del manifiesto.
+- El workflow no tenía credenciales de Firebase productivo, no generó artefactos descifrados y limpió los datos temporales al terminar.
+- Un primer intento, [#38613781391](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38613781391), falló **antes del descifrado** por un error en la validación de la dirección local del emulador; corregido en `main` (`94cdd82`) y repetido exitosamente.
+
+**Acción privada urgente del propietario:** eliminar de GitHub `Settings → Secrets and variables → Actions` el secreto temporal `APPSEM_BACKUP_RECOVERY_PASSPHRASE`. Conservar la frase original en custodia privada fuera de GitHub.
+
+La aprobación de recuperación cierra el requisito de backup restaurable, **no** implica que el backend de métricas ya esté autenticado frente a Firebase real, que Cloudflare Siteverify haya sido comprobado en live ni que se hayan publicado reglas endurecidas. Mantener deshabilitados `VITE_METRICS_BACKEND=server` y `METRICS_BACKEND_ENABLED=true` hasta superar las pruebas de activación coordinada. El respaldo no incluye Firebase Authentication, Storage ni índices.
