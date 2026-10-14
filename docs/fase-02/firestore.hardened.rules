@@ -1,9 +1,11 @@
 rules_version = '2';
 
-// FASE 2 — CANDIDATO DE SEGURIDAD. NO DESPLEGAR A PRODUCCIÓN.
-// IMPORTANTE: La tienda actual escribe contadores y eventos directamente.
-// Estas reglas bloquearían likes/ratings/downloadClicks hasta activar backend fiable.
-// Origen y despliegue: consultar docs/fase-02/README.md.
+// FASE 2 — REGLAS REFORZADAS. PUBLICACIÓN CONFIRMADA POR EL PROPIETARIO (14/10/2026).
+// La auditoría anónima en Firebase REAL confirmó lecturas públicas permitidas y
+// denegación de likes, ratings e historial de descargas (Actions #38649931569).
+// Las interacciones de la tienda ya se envían al backend Vercel con Turnstile.
+// Este archivo es la referencia probada; si se editan reglas, probar en Emulator
+// antes de aplicar cambios a producción. Guía: docs/fase-02/ACTIVACION_COORDINADA.md.
 service cloud.firestore {
   match /databases/{database}/documents {
     function isAdmin() {
