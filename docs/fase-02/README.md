@@ -105,3 +105,18 @@ CI final: [Tienda #38590736041](https://github.com/eler30mr-star/appsem-store/ac
 - **Firebase Admin:** la configuración cliente de Firebase del código no concede lectura administrativa de Firestore. Esta sesión no tiene un conector Firebase Admin autorizado ni la frase de descifrado del respaldo real; la prueba de restauración de dicho respaldo aún no está hecha.
 
 **Interpretación:** Vercel y GitHub sí son accesibles directamente, y ambos despliegues están preparados/READY, pero **no es seguro activar la API** hasta aprovisionar credenciales de servicio Firebase y Cloudflare Turnstile y comprobar la recuperación del respaldo real. No se consultaron valores privados ni se cambió ningún secreto, configuración productiva de Vercel o reglas de Firestore en esta revisión.
+
+
+## Configuración privada Vercel comprobada (14/10/2026)
+
+En el proyecto productivo `appsem-store` se verificó por nombres y tipos, sin descifrar ni publicar valores, que existen estas variables en `Production`:
+
+- `FIREBASE_SERVICE_ACCOUNT_JSON`: sensitive; provista por el propietario. Aún no se ha verificado la autenticación de esta cuenta ante Firebase.
+- `TURNSTILE_SECRET_KEY`: sensitive; provista por el propietario.
+- `VITE_TURNSTILE_SITE_KEY`: encrypted (clave pública); provista por el propietario.
+- `PUBLIC_SITE_ORIGIN`: encrypted; configurada como `https://appsem-store.vercel.app`.
+- `METRICS_HMAC_SECRET`: sensitive; generada aleatoriamente y almacenada solo en Vercel. Mantener estable para preservar la deduplicación de eventos.
+
+**No se han definido las banderas `METRICS_BACKEND_ENABLED=true` ni `VITE_METRICS_BACKEND=server`.** El frontend continúa con el circuito anterior. Las reglas productivas de Firebase permanecen intactas. Guardar variables no demuestra autenticación funcional ni equivale a activar el backend.
+
+**Pendientes antes del corte:** probar descifrado/recuperación de la copia cifrada real sin divulgar su frase; validar API y Turnstile en ensayo autorizado; verificar permisos de cuenta de servicio; coordinar cliente y reglas con reversión.
