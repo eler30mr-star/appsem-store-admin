@@ -124,3 +124,16 @@ Solo después de auditar:
 ## 7. Instrucción para retomar en un nuevo chat
 
 > Continúa Appsem Store / Appsem Store Admin desde `docs/fase-03/AVANCE_Y_PENDIENTES_2026-10-14.md` en GitHub. La Fase 2 quedó cerrada. La primera entrega de Fase 3 (moderación atómica y archivado reversible) está fusionada en Admin main, commit `1ce91cd`, y aprobó Actions `38652005845`. Su publicación en Vercel Production está pendiente de confirmación por límite HTTP 402 del plan Hobby. Verifica primero el despliegue productivo y no confundas Preview READY con Production; después implementa la auditoría de integridad read-only con tests en Firebase Emulator. No modifiques reglas ni datos reales. Mantén el documento de avance actualizado y continúa las siguientes tareas de Fase 3 antes de cerrarla.
+
+
+## 8. Continuación de Fase 3 — Segunda entrega (14/10/2026)
+**Entrega de desarrollo:** auditoría de integridad read-only (P1 del apartado 5), sin migrar ni alterar datos.
+
+- \`scripts/phase3/integrity-core.mjs\`: comparación pura de contadores y eventos observados, con distinción explícita entre discrepancias exactas de comentarios y diferencias históricas no concluyentes de likes/ratings/downloads.
+- \`scripts/phase3/audit-integrity.mjs\`: lector Firebase Admin SDK acotado, alias HMAC para apps, hallazgo de padres huérfanos y protección de producción por flags explícitos. Ninguna escritura de datos.
+- \`tests/phase3/audit-integrity-core.test.mjs\` y \`tests/phase3/audit-integrity-emulator.test.mjs\`: cobertura de errores, casos legados, ausencia de PII y no modificación en Emulator.
+- \`docs/fase-03/AUDITORIA_INTEGRIDAD_SOLO_LECTURA.md\`: contrato, uso seguro y significado de resultados.
+- Comando: \`npm run phase3:audit:read-only -- --project=demo-appsem-phase3 --read-emulator\` (requiere Emulator activo y \`PHASE3_AUDIT_KEY\` externa).
+- **Verificación CI:** pendiente de resultado del PR de esta entrega; no afirmar éxito hasta confirmar Actions.
+- **Vercel consultado en esta continuación:** último Production READY encontrado: \`7c6f14f9242ddae7b86a3dca1826f04b19de26e4\`, anterior a \`1ce91cd\`. Las versiones más recientes encontradas fueron \`target: null\` (Preview). No se han probado Archivar/Restaurar en producción.
+- **La Fase 3 continúa abierta.** Siguientes prioridades: deployment Production verificable, audit real autorizado y solo lectura, respaldo **reciente**, dry-run de reconciliación, rollback y controles E2E. No ejecutar corrección sin revisar hallazgos.
