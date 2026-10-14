@@ -6,6 +6,7 @@ on:
       - ".github/workflows/fase-01-baseline.yml"
       - "src/**"
       - "scripts/firestore/**"
+      - "backups/encrypted/**"
       - "tests/backup/**"
       - "tests/**"
       - "scripts/**"
@@ -42,6 +43,8 @@ jobs:
         run: npm run test:backup:codec
       - name: "Validar cifrado y recuperación local"
         run: npm run test:backup:encrypted
+      - name: "Verificar formato del respaldo cifrado real sin descifrar"
+        run: node scripts/firestore/inspect-github-backup.mjs backups/encrypted/appsem-firestore-2026-10-13T21-27-24-109Z-b3f473bd.appsem.enc
       - name: "Cifrado navegador recuperable con CLI Node"
         run: node --test tests/backup/browser-interoperability.test.mjs
       - name: "Inventario estático (sin acceso a Firebase real)"
