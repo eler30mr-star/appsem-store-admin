@@ -83,6 +83,14 @@ test('Vercel HTTP: validación + captcha + operación con Admin SDK aislada', as
       assert.equal((await db.doc('apps/' + appId).get()).data().likesCount, 1);
       assert.equal(verifiedRequests.length, 2);
     });
+    await t.test('X-Forwarded-For ordinario no puede sustituir el encabezado confiable', async () => {
+      const req = request('POST', { body: { ...sample, action: 'rating', rating: 3 } });
+      delete req.headers['x-vercel-forwarded-for'];
+      req.headers['x-forwarded-for'] = '203.0.113.250';
+      const denied = await invoke(req);
+      assert.equal(denied.statusCode, 400);
+      assert.equal((await db.doc('apps/' + appId).get()).data().ratingCount, 0);
+    });
     await t.test('GET devuelve estado sin emitir desafío', async () => {
       const before = verifiedRequests.length;
       const result = await invoke(request('GET', { query: { appId, visitorId: visitor } }));
