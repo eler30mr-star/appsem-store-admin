@@ -33,6 +33,12 @@ test('Fase 2 — reglas preparadas para backend confiable', async (t) => {
       await setDoc(doc(db, 'apps', 'pub', 'comments', 'pending'), {
         name: 'Ana', comment: 'Pendiente de revisión', approved: false, createdAt: serverTimestamp()
       });
+      await setDoc(doc(db, 'apps', 'pub', 'likes', 'id-heredado'), {
+        createdAt: serverTimestamp()
+      });
+      await setDoc(doc(db, 'apps', 'pub', 'ratings', 'id-heredado'), {
+        rating: 4, createdAt: serverTimestamp()
+      });
     });
   };
   const anon = () => env.unauthenticatedContext().firestore();
@@ -89,12 +95,6 @@ test('Fase 2 — reglas preparadas para backend confiable', async (t) => {
     });
     await t.test('IDs de visitante: likes y ratings no son legibles para terceros', async () => {
       await reset();
-      await env.withSecurityRulesDisabled(async ctx => {
-        await setDoc(doc(ctx.firestore(), 'apps', 'pub', 'likes', 'id-heredado'), { createdAt: serverTimestamp() });
-        await setDoc(doc(ctx.firestore(), 'apps', 'pub', 'ratings', 'id-heredado'), {
-          rating: 4, createdAt: serverTimestamp()
-        });
-      });
       await assertFails(getDoc(doc(anon(), 'apps', 'pub', 'likes', 'id-heredado')));
       await assertFails(getDoc(doc(anon(), 'apps', 'pub', 'ratings', 'id-heredado')));
       await assertFails(getDoc(doc(impostor(), 'apps', 'pub', 'likes', 'id-heredado')));
