@@ -104,3 +104,18 @@ Ver código reproducible: [scripts/check-phase2-live-readiness.mjs](https://gith
 **Bloqueador operativo:** esta integración GitHub/Vercel no administra todavía las reglas reales de Firebase. El corte de reglas requiere intervención explícita en Firebase Console o una conexión Firebase autorizada. No publicar reglas unilateralmente ni afirmar que ya están endurecidas.
 
 **Última prueba adicional de reglas:** [Admin Actions #38632847831](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38632847831) — SUCCESS. Se verificó desde SDK web que `where(status, published)` lista solo publicadas, que `status+slug` consulta fichas y que `where(approved,true)` lista comentarios aprobados; las consultas públicas sin filtros relevantes se deniegan. Admin verificado puede consultar el panel y moderación.
+
+## Comparación con reglas confirmadas en Firebase Console (14/10/2026)
+
+El propietario suministró en el chat el texto de las reglas **efectivamente publicadas** en Firebase Console. Esa versión es la referencia de reversión; **NO equivale** a ninguno de los dos ficheros `firestore.rules` actuales en GitHub. Tampoco corresponde copiar un fichero de GitHub como rollback sin comprobar su contenido.
+
+Hallazgos:
+- La regla publicada autentica Admin por su email pero no exige `email_verified`. La candidata endurecida exige también correo verificado. El cliente Admin ya incluye esa validación.
+- La regla publicada permite a visitantes crear likes, ratings, downloadClicks y comentarios, además de incrementar ciertos contadores. Una persona automatizada puede simular métricas; la validación de timestamp no equivale a identidad.
+- La regla publicada permite lectura pública de likes y ratings cuando la app está publicada. La candidata elimina esa lectura y delega consultas de estado en el backend con hash.
+- Se conserva en la candidata la lectura de catálogo publicado y comentarios aprobados, y la moderación por admin verificado.
+- **Transición no atómica**: `METRICS_BACKEND_ENABLED=read-only` ahora bloquea POST. Antes de aplicar reglas nuevas: activar API de escritura confiable, desplegar frontend con `VITE_METRICS_BACKEND=server` y probar los cuatro tipos de interacción. Solo después publicar reglas en Firebase Console.
+
+**Resguardo pendiente:** la operación de archivar literalmente las reglas entregadas en GitHub no pudo completarse y no debe darse por realizada. Antes del corte, el propietario debe guardar desde Firebase Console una copia exacta de las reglas que están vigentes (texto o exportación privada), además de conservar el historial de revisiones disponible en Console. La conversación contiene la copia proporcionada, pero no sustituye una verificación del texto vigente en el momento del despliegue.
+
+**Reglas en producción:** sin cambios en esta auditoría. Esta nota documenta la comparación, no es una instrucción de publicación automática.
