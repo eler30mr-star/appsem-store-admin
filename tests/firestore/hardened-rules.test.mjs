@@ -87,6 +87,19 @@ test('Fase 2 — reglas preparadas para backend confiable', async (t) => {
       await assertFails(deleteDoc(ref(anon())));
       await assertSucceeds(setDoc(ref(admin(), 'admin-added'), { title: 'Nueva', status: 'draft' }));
     });
+    await t.test('IDs de visitante: likes y ratings no son legibles para terceros', async () => {
+      await reset();
+      await env.withSecurityRulesDisabled(async ctx => {
+        await setDoc(doc(ctx.firestore(), 'apps', 'pub', 'likes', 'id-heredado'), { createdAt: serverTimestamp() });
+        await setDoc(doc(ctx.firestore(), 'apps', 'pub', 'ratings', 'id-heredado'), {
+          rating: 4, createdAt: serverTimestamp()
+        });
+      });
+      await assertFails(getDoc(doc(anon(), 'apps', 'pub', 'likes', 'id-heredado')));
+      await assertFails(getDoc(doc(anon(), 'apps', 'pub', 'ratings', 'id-heredado')));
+      await assertFails(getDoc(doc(impostor(), 'apps', 'pub', 'likes', 'id-heredado')));
+      await assertSucceeds(getDoc(doc(admin(), 'apps', 'pub', 'likes', 'id-heredado')));
+    });
     await t.test('Publicación de like sin backend está bloqueada', async () => {
       await reset();
       await assertFails(setDoc(doc(anon(), 'apps', 'pub', 'likes', 'arbitrario'), { createdAt: serverTimestamp() }));

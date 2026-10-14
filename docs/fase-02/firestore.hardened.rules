@@ -28,12 +28,12 @@ service cloud.firestore {
       // Contadores agregados y registros de interacción serán mantenidos
       // en transacción por un backend autenticado; Service SDK elude reglas.
       match /likes/{likeId} {
-        allow read: if isAdmin() || parentPublished(appId);
+        allow read: if isAdmin();
         allow create, update, delete: if isAdmin();
       }
 
       match /ratings/{ratingId} {
-        allow read: if isAdmin() || parentPublished(appId);
+        allow read: if isAdmin();
         allow create, update, delete: if isAdmin();
       }
 
