@@ -6,14 +6,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { initializeTestEnvironment, assertSucceeds, assertFails } from '@firebase/rules-unit-testing';
-import { doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, increment } from 'firebase/firestore';
+import { doc, getDoc, getDocs, query, collection, where, orderBy, setDoc, updateDoc, deleteDoc, serverTimestamp, increment } from 'firebase/firestore';
 
 const projectId = 'demo-appsem-phase1';
 if (!/^(127\.0\.0\.1|localhost):8080$/.test(process.env.FIRESTORE_EMULATOR_HOST || '')) {
   throw new Error('SOLO Firestore Emulator puerto 8080.');
 }
 const rules = readFileSync(new URL('../../docs/fase-02/firestore.hardened.rules', import.meta.url), 'utf8');
-const published = { title: 'App', status: 'published', likesCount: 2,
+const published = { title: 'App', slug: 'demo-pub', status: 'published', likesCount: 2,
   ratingAverage: 4, ratingCount: 1, downloadsCount: 8 };
 const adminEmail = 'eler30.mr@gmail.com';
 
@@ -55,6 +55,48 @@ test('Fase 2 — reglas preparadas para backend confiable', async (t) => {
       await assertSucceeds(getDoc(ref(anon())));
       await assertFails(getDoc(ref(anon(), 'draft')));
       await assertSucceeds(getDoc(ref(admin(), 'draft')));
+    });
+    await t.test('Consultas REALES de tienda: catálogo publicado, ficha por slug y comentarios aprobados', async () => {
+      await reset();
+      const guestDb = anon();
+      const catalog = await assertSucceeds(getDocs(query(
+        collection(guestDb, 'apps'), where('status', '==', 'published')
+      )));
+      assert.equal(catalog.size, 1);
+      assert.equal(catalog.docs[0].id, 'pub');
+
+      const detail = await assertSucceeds(getDocs(query(
+        collection(guestDb, 'apps'),
+        where('status', '==', 'published'),
+        where('slug', '==', 'demo-pub')
+      )));
+      assert.equal(detail.size, 1);
+
+      const approvedComments = await assertSucceeds(getDocs(query(
+        collection(guestDb, 'apps', 'pub', 'comments'),
+        where('approved', '==', true)
+      )));
+      assert.equal(approvedComments.size, 1);
+      assert.equal(approvedComments.docs[0].id, 'approved');
+
+      await assertFails(getDocs(collection(guestDb, 'apps')),
+        'La tienda nunca debe listar borradores sin filtrar por published');
+      await assertFails(getDocs(collection(guestDb, 'apps', 'pub', 'comments')),
+        'No se permite leer comentarios pendientes con una consulta sin filtro');
+    });
+    await t.test('Consultas del panel Admin: apps y moderación con el correo verificado', async () => {
+      await reset();
+      const adminDb = admin();
+      const apps = await assertSucceeds(getDocs(query(
+        collection(adminDb, 'apps'), orderBy('createdAt', 'desc')
+      )));
+      // Fixture sin createdAt: query vacío, pero la autorización debe ser correcta.
+      assert.equal(apps.size, 0);
+      const comments = await assertSucceeds(getDocs(query(
+        collection(adminDb, 'apps', 'pub', 'comments'),
+        orderBy('createdAt', 'desc')
+      )));
+      assert.equal(comments.size, 2);
     });
     await t.test('Admin verificado puede modificar; sin email_verified no puede', async () => {
       await reset();
