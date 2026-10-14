@@ -76,4 +76,13 @@ La **migración real** requiere respaldo reciente y recuperable, modo dry-run, r
 - **Pruebas:** CI del PR [#38651856327](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38651856327) y de main [#38652005845](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38652005845) **SUCCESS**, incluyendo transacciones de Fase 3, Firebase Emulator, integración de Fase 2 y Vite build.
 - **Producción:** no publicada la nueva entrega. Vercel rechazó el despliegue manual con HTTP 402 `api-deployments-free-per-day`, límite diario de despliegues en plan Hobby. El último deployment Production verificado era anterior a `1ce91cd`; no afirmar que los botones Archivar/Restaurar ya están disponibles en la web.
 - **Pendiente de entrega productiva:** crear despliegue Production desde `main` cuando el límite de Vercel permita nuevos deploys; comprobar SHA READY, abrir Admin y probar archivado/restauración con **app de prueba** (no con una publicada real), y moderación repetida con comentarios sintéticos o preparados. No publicar cambios de reglas.
-- **Pendiente fase 3:** conciliación read-only de métricas y diseño/ensayo de migración reversible sin pérdida de datos.
+- **Actualización:** el código del auditor read-only de métricas se integró en la segunda entrega; su ejecución con datos reales y la migración reversible siguen pendientes.
+
+
+## Estado operativo de la segunda entrega (14/10/2026)
+
+- **PR #11 fusionado en `main`:** [auditoría read-only](https://github.com/eler30mr-star/appsem-store-admin/pull/11), integración `d142a0d961d9833cb31a5bcdbf0e4c372876706e`.
+- **CI completo:** [PR SUCCESS](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38653374301) y [main SUCCESS](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38653510663).
+- **Guía del auditor:** [AUDITORIA_INTEGRIDAD_SOLO_LECTURA.md](./AUDITORIA_INTEGRIDAD_SOLO_LECTURA.md). No escribe datos, compara eventos históricos sin suponer que están completos, detecta inconsistencias y omite datos personales del JSON.
+- **Vercel Production:** nuevo intento rechazado por **HTTP 402** `api-deployments-free-per-day` (espera indicada: 24 horas). Sin Production nuevo verificado; no probar datos reales.
+- **Fase 3 aún abierta:** falta verificar despliegue y flujos reales con app de prueba, obtener backup reciente, ejecutar auditoría autorizada read-only y ensayar conciliación reversible.
