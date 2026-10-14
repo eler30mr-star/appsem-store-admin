@@ -59,3 +59,19 @@ Se ejecutaron conjuntamente las reglas candidatas de Admin y el código real del
 Se verificó: rechazo de incrementos públicos, lectura restringida de likes y valoraciones, likes/rating/descargas transaccionales, deduplicación, bloqueo de borradores y compatibilidad con IDs antiguos. La prueba encontró un error real al deduplicar descargas sin validar antes la URL; quedó corregido en la tienda pública (commit `9fb452f`).
 
 **Producción:** la tienda y Firebase siguen usando las reglas vigentes. Todavía falta ensayo de restauración del respaldo cifrado, configuración autorizada de credenciales en Vercel y despliegue coordinado del cliente y las reglas. No activar las reglas nuevas de forma aislada.
+
+
+## Cuarto lote — API HTTP comprobada con datos de Emulator (14/10/2026)
+
+Se amplió la suite de integración para llamar al endpoint **real** de Vercel `api/interaction.js` desde Node, usando Firebase Admin SDK conectado únicamente a Firestore Emulator y una respuesta simulada de Cloudflare Siteverify.
+
+**Evidencia final:**
+- [Tienda pública: GitHub Actions #38588521353](https://github.com/eler30mr-star/appsem-store/actions/runs/38588521353) — SUCCESS, **17/17** pruebas, ESLint y compilación Vite correctas.
+- [Admin: GitHub Actions #38588594279](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38588594279) — SUCCESS, **46/46** pruebas de reglas y **15/15** pruebas de integración con Emulator, además de las pruebas de línea base y respaldo.
+- Revisión cruzada reproducible: el workflow de Admin importa una revisión **fijada por SHA** de `appsem-store`; no depende de una rama `main` cambiante en medio de las pruebas.
+
+**Comprobaciones nuevas:** POST del sitio autorizado, desafío Turnstile válido/inválido, idempotencia de like, cálculo de rating, rechazo de enlaces ajenos y descargas no autorizadas, errores 403/413/415, manejo de HTTP/2 sin `Content-Length`, rechazo de JSON excesivo aunque se anuncie un tamaño inferior, GET de estado, apagado de backend cuando no está habilitado y verificación estructural de variables Firebase/Vercel antes de compilar.
+
+**Seguridad de las pruebas:** sin claves de producción; la API de ensayo requiere explícitamente `METRICS_EMULATOR_TEST=true`, hostname loopback y proyecto ficticio `demo-*`, y se bloquea en Vercel real. La simulación Turnstile **no prueba Cloudflare real ni el despliegue live**.
+
+**Pendientes para activar:** comprobación de recuperación de la copia cifrada real; credenciales y Turnstile de Vercel; preview segura y monitorizada; cambio coordinado de frontend y reglas Firestore. La Fase 2 permanece abierta, sin escrituras de producción desde esta auditoría.
