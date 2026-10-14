@@ -81,3 +81,10 @@ Ver código reproducible: [scripts/check-phase2-live-readiness.mjs](https://gith
 - La API en modo `read-only` rechaza los POST **503** antes de conectar Firestore o procesar token; la suite de tienda comprueba esta guarda. El workflow de Admin está fijado al commit actualizado e incluye una prueba real HTTP/SDK con Firebase Emulator para confirmar GET permitido y POST sin escrituras.
 - Reversión inmediata del estado intermedio: cambiar la variable `METRICS_BACKEND_ENABLED` a `false` o eliminarla y redeplegar; GET y POST volverán a **503**. Mantener `VITE_METRICS_BACKEND` ausente y reglas productivas intactas durante esta fase.
 - **No confundir con activación final**: faltan transición cliente servidor, pruebas E2E en navegador, bloqueo de escrituras antiguas de Firebase mediante reglas, revisión de costos y plan de reversión. Este paso intermedio NO autentica usuarios por identidad real ni cierra el control antispam.
+
+## Rotación preventiva HMAC antes de aceptar eventos (14/10/2026)
+
+- Antes de habilitar cualquier POST del nuevo backend, se sustituyó el valor inicial de `METRICS_HMAC_SECRET` por una clave nueva de **48 bytes generados mediante CSPRNG**, almacenada directamente en Vercel como variable `sensitive` (64 caracteres URL-safe). Ni el valor ni el JSON de Firebase figuran en este repositorio.
+- La API está en modo `METRICS_BACKEND_ENABLED=read-only`, por lo que no existían eventos nuevos registrados con la clave antigua; el cambio no exige migración de hashes anteriores del backend. Los eventos heredados de navegador continúan consultándose por su ID sin hash.
+- Después del cambio de clave, se solicitó redeploy forzado de Production del mismo commit `54fc6e3` para que el runtime use el secreto nuevo. Se debe comprobar estado READY y repetir GET read-only antes de habilitar POST.
+- **No volver a rotar esta clave después del primer evento real salvo con un plan de migración**: el HMAC determina IDs de deduplicación, y cambiarlo sin migrar los existentes puede duplicar likes, ratings y descargas.
