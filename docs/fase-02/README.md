@@ -93,3 +93,15 @@ El endpoint también dejó de aceptar `X-Forwarded-For` ordinario como sustituto
 ## Resultado confirmado del lote antispam (14/10/2026)
 
 CI final: [Tienda #38590736041](https://github.com/eler30mr-star/appsem-store/actions/runs/38590736041) SUCCESS, 20/20 pruebas; [Admin #38590806493](https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38590806493) SUCCESS, 46/46 pruebas de reglas y 19/19 de integración HTTP/SDK, sin fallos. Quedan pendientes verificación de restauración del backup real y activación coordinada de credenciales, Turnstile y reglas con Vercel. No se han desplegado reglas productivas.
+
+
+## Comprobación directa Vercel + GitHub (14/10/2026)
+
+**Accesos comprobados:** conexión Vercel autorizada y operativa, conexión GitHub con lectura y escritura. Se consultaron directamente los dos proyectos de Vercel, sus últimos despliegues y los nombres de variables de entorno (sin descifrar secretos).
+
+- **Tienda**: Vercel `appsem-store` (ID `prj_F7xjZYw4Oui1WefBfyWiUCIkRTN3`), `production` READY, último despliegue `dpl_GwtEETz1PcEDtBcpTwX2ZyNAnKrh`, SHA `be9f6d8f723a92a360a04fb6c341c076daa40489`, coincide exactamente con `main` de `eler30mr-star/appsem-store`.
+- **Admin**: Vercel `appsem-store-admin` (ID `prj_cq83lWMiInuJpS98LMofywBKp7FR`), `production` READY, despliegue `dpl_GBaTZPHsgoP6xoDYGqXzBXV82Wyo`, SHA `2c4caab48e0a1a6dcf69bebc49258f5b7b684a06`, coincide exactamente con `main` de `eler30mr-star/appsem-store-admin`.
+- **Variables Vercel:** listado de ambos proyectos devolvió **0 variables de entorno** y **0 variables de producción ocultas**. No están configuradas `FIREBASE_SERVICE_ACCOUNT_JSON`, `METRICS_HMAC_SECRET`, `TURNSTILE_SECRET_KEY`, `PUBLIC_SITE_ORIGIN`, ni las banderas/sitekey requeridas. El backend de métricas está necesariamente en modo no habilitado.
+- **Firebase Admin:** la configuración cliente de Firebase del código no concede lectura administrativa de Firestore. Esta sesión no tiene un conector Firebase Admin autorizado ni la frase de descifrado del respaldo real; la prueba de restauración de dicho respaldo aún no está hecha.
+
+**Interpretación:** Vercel y GitHub sí son accesibles directamente, y ambos despliegues están preparados/READY, pero **no es seguro activar la API** hasta aprovisionar credenciales de servicio Firebase y Cloudflare Turnstile y comprobar la recuperación del respaldo real. No se consultaron valores privados ni se cambió ningún secreto, configuración productiva de Vercel o reglas de Firestore en esta revisión.
