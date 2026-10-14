@@ -134,6 +134,17 @@ Solo después de auditar:
 - \`tests/phase3/audit-integrity-core.test.mjs\` y \`tests/phase3/audit-integrity-emulator.test.mjs\`: cobertura de errores, casos legados, ausencia de PII y no modificación en Emulator.
 - \`docs/fase-03/AUDITORIA_INTEGRIDAD_SOLO_LECTURA.md\`: contrato, uso seguro y significado de resultados.
 - Comando: \`npm run phase3:audit:read-only -- --project=demo-appsem-phase3 --read-emulator\` (requiere Emulator activo y \`PHASE3_AUDIT_KEY\` externa).
-- **Verificación CI:** pendiente de resultado del PR de esta entrega; no afirmar éxito hasta confirmar Actions.
+- **Verificación CI:** completada, tanto PR como main; ver sección 9 (enlaces oficiales a Actions).
 - **Vercel consultado en esta continuación:** último Production READY encontrado: \`7c6f14f9242ddae7b86a3dca1826f04b19de26e4\`, anterior a \`1ce91cd\`. Las versiones más recientes encontradas fueron \`target: null\` (Preview). No se han probado Archivar/Restaurar en producción.
 - **La Fase 3 continúa abierta.** Siguientes prioridades: deployment Production verificable, audit real autorizado y solo lectura, respaldo **reciente**, dry-run de reconciliación, rollback y controles E2E. No ejecutar corrección sin revisar hallazgos.
+
+
+## 9. Resultado verificado de la segunda entrega — 14/10/2026
+- **PR #11 fusionado en `main`:** https://github.com/eler30mr-star/appsem-store-admin/pull/11
+- **SHA de integración:** `d142a0d961d9833cb31a5bcdbf0e4c372876706e`.
+- **CI del PR:** https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38653374301 — **SUCCESS**.
+- **CI tras integrar en `main`:** https://github.com/eler30mr-star/appsem-store-admin/actions/runs/38653510663 — **SUCCESS** (Firebase Emulator, Fase 3, integración de Fase 2 y build Vite).
+- **Despliegue:** intento explícito de Production para el SHA `d142a0d` rechazado por Vercel con **HTTP 402** `api-deployments-free-per-day`; respuesta solicitó esperar **86400 segundos (24 horas)**. No hay un Production READY nuevo verificado. **No repetir despliegues hoy** y no declarar los botones publicados.
+- **Auditoría de datos reales:** NO ejecutada. Sólo código integrado y pruebas sintéticas de Emulator.
+- **Trabajo siguiente:** verificar cuándo desaparezca el límite, publicar `main` como Production y comprobar SHA/dominio; después pruebas funcionales con app sintética, informe read-only autorizado, copia de seguridad actualizada y preparación de migración reversible.
+- **Fase 3:** continúa **ABIERTA**. No ejecutar borrados ni migraciones de datos ni cambiar reglas de Firestore.
