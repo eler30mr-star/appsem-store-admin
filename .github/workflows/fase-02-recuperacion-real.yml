@@ -1,0 +1,36 @@
+name: "Fase 2 - Recuperar respaldo real en Firebase Emulator"
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recovery:
+    name: "Recuperación real aislada; sin producción"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Obtener repositorio sin persistir credenciales
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Preparar Java para Firebase Emulator
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Instalar dependencias (sin acceder al secreto)
+        run: npm ci --no-audit --no-fund
+      - name: Restaurar respaldo únicamente en Emulator (sin artefactos)
+        env:
+          APPSEM_BACKUP_RECOVERY_PASSPHRASE: ${{ secrets.APPSEM_BACKUP_RECOVERY_PASSPHRASE }}
+          GCLOUD_PROJECT: demo-appsem-phase2-recovery
+        run: npx firebase emulators:exec --config firebase.phase1.json --project demo-appsem-phase2-recovery --only firestore "node scripts/firestore/check-real-backup-recovery.mjs"
+
+# No deploy, no acceso a Firebase real, no GCP keys, sin subida de artefactos.
+# El usuario debe eliminar el secreto temporal de GitHub tras ver PASS.
