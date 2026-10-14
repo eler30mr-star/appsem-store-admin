@@ -1,20 +1,21 @@
 import {
   addDoc,
   collection,
-  deleteDoc,
   doc,
   getDoc,
   getDocs,
-  increment,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
-  updateDoc,
+  runTransaction,
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import { getCategoryLabel } from '../data/categories';
 import { DEFAULT_DEVELOPER } from '../config';
+import {
+  moderateCommentAtomic, archiveAppAtomic, restoreAppAtomic, updatePublicationAtomic
+} from './phase3Transactions';
 
 const appsRef = collection(db, 'apps');
 
@@ -142,18 +143,29 @@ export async function updateApp(appId, formData) {
     throw error;
   }
 
-  return updateDoc(doc(db, 'apps', appId), payload);
+  // Una URL directa al editor no debe permitir volver a publicar una app
+  // archivada sin pasar por la operación explícita de restauración.
+  const appRef = doc(db, 'apps', appId);
+  return runTransaction(db, async (tx) => {
+    const snapshot = await tx.get(appRef);
+    if (!snapshot.exists()) throw new Error('La aplicación ya no existe.');
+    if (snapshot.data().status === 'archived') {
+      throw new Error('Primero restaura la aplicación archivada a borrador.');
+    }
+    tx.update(appRef, payload);
+  });
 }
 
-export async function deleteApp(appId) {
-  return deleteDoc(doc(db, 'apps', appId));
+export async function archiveApp(appId) {
+  return archiveAppAtomic(db, appId);
+}
+
+export async function restoreApp(appId) {
+  return restoreAppAtomic(db, appId);
 }
 
 export async function updateAppStatus(appId, status) {
-  return updateDoc(doc(db, 'apps', appId), {
-    status,
-    updatedAt: serverTimestamp(),
-  });
+  return updatePublicationAtomic(db, appId, status);
 }
 
 export async function loadAllComments(apps = []) {
@@ -182,40 +194,13 @@ export async function loadAllComments(apps = []) {
 }
 
 export async function approveComment(comment) {
-  await updateDoc(doc(db, 'apps', comment.appId, 'comments', comment.id), {
-    approved: true,
-    approvedAt: serverTimestamp(),
-  });
-
-  if (!comment.approved) {
-    await updateDoc(doc(db, 'apps', comment.appId), {
-      commentsCount: increment(1),
-      updatedAt: serverTimestamp(),
-    });
-  }
+  return moderateCommentAtomic(db, comment, 'approve');
 }
 
 export async function hideComment(comment) {
-  await updateDoc(doc(db, 'apps', comment.appId, 'comments', comment.id), {
-    approved: false,
-    updatedAt: serverTimestamp(),
-  });
-
-  if (comment.approved) {
-    await updateDoc(doc(db, 'apps', comment.appId), {
-      commentsCount: increment(-1),
-      updatedAt: serverTimestamp(),
-    });
-  }
+  return moderateCommentAtomic(db, comment, 'hide');
 }
 
 export async function removeComment(comment) {
-  await deleteDoc(doc(db, 'apps', comment.appId, 'comments', comment.id));
-
-  if (comment.approved) {
-    await updateDoc(doc(db, 'apps', comment.appId), {
-      commentsCount: increment(-1),
-      updatedAt: serverTimestamp(),
-    });
-  }
+  return moderateCommentAtomic(db, comment, 'remove');
 }

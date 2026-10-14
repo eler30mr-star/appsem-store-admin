@@ -57,6 +57,8 @@ jobs:
         run: npm run build
       - name: "Permisos y compatibilidad de reglas (solo emulador)"
         run: npm run test:firestore
+      - name: "Fase 3: probar transacciones y archivado sin tocar Firebase real"
+        run: npm run test:phase3:integrity
       - name: "Obtener tienda pública para integración real"
         uses: actions/checkout@v4
         with:
